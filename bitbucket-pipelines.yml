@@ -1,0 +1,115 @@
+definitions:
+  services:
+   docker:
+    memory: 2048
+  steps:
+    - step: &definer
+        name: Defining Variables
+        runs-on: 
+            - 'self.hosted'
+            - 'linux'
+            - 'gke'
+        script:
+          - >
+            if grep -q "dev" <<< "$BITBUCKET_BRANCH";then
+              echo "export REGISTRY_URL=$nobu_digital_dev_registry_url/digital-loan" >> set_var.txt
+              echo "export SA_KEY=`echo $nobu_digital_dev_sa_key | base64 -w0`" >> set_var.txt
+            elif grep -q "sit" <<< "$BITBUCKET_BRANCH";then
+              echo "export REGISTRY_URL=$nobu_digital_sit_registry_url/digital-loan" >> set_var.txt
+              echo "export SA_KEY=`echo $nobu_digital_sit_sa_key | base64 -w0`" >> set_var.txt
+            elif grep -q "uat" <<< "$BITBUCKET_BRANCH";then
+              echo "export REGISTRY_URL=$nobu_digital_uat_registry_url/digital-loan" >> set_var.txt
+              echo "export SA_KEY=`echo $nobu_digital_uat_sa_key | base64 -w0`" >> set_var.txt
+            fi
+          # - VERSION=`date '+%y%m%d%H%M%S'`
+          - VERSION='latest'
+          - REPO_NAME=`echo $BITBUCKET_REPO_FULL_NAME | cut -d'/' -f 2`
+          - echo "export VERSION=$VERSION" >> set_var.txt
+          - echo "export REPO_NAME=$REPO_NAME" >> set_var.txt
+        artifacts:
+          - set_var.txt
+    - step: &lint-code
+        # trigger: manual
+        name: Lint code
+        runs-on: 
+            - 'self.hosted'
+            - 'linux'
+            - 'gke'
+        image: golangci/golangci-lint:v1.31.0
+        script:
+          - golangci-lint run -v
+    - step: &build-image
+        name: Build Docker Image Based on Repo Name
+        runs-on: 
+            - 'self.hosted'
+            - 'linux'
+            - 'gke'
+        # image: golang:1.17.2
+        services:
+          - docker
+        artifacts:
+            paths:
+              - dockerimg.tar
+        script:
+          - source set_var.txt
+          # - docker build -t $REGISTRY_URL/$REPO_NAME:$VERSION -f Dockerfile .
+          - docker build --build-arg nobu_bitbucket_repo_access=$nobu_bitbucket_repo_access -t $REGISTRY_URL/$REPO_NAME:$VERSION -f bitbucket.dockerfile  .
+          - docker save --output dockerimg.tar $REGISTRY_URL/$REPO_NAME:$VERSION
+    - step: &push-to-artifact-registry
+        name: Push Docker Image to Google Artifact Registry
+        runs-on: 
+            - 'self.hosted'
+            - 'linux'
+            - 'gke'
+        services:
+          - docker
+        image: google/cloud-sdk:alpine
+        # trigger: manual  # Uncomment to make this a manual deployment.
+        script:
+          - source set_var.txt
+          - echo $SA_KEY | base64 -d > ./gcloud-api-key.json
+          - docker login -u _json_key -p "$(cat gcloud-api-key.json)" $nobu_digital_gcp_registry_url
+          - docker load --input dockerimg.tar
+          - docker push $REGISTRY_URL/$REPO_NAME:$VERSION
+          - echo '"$REGISTRY_URL"'/'"$REPO_NAME"':'"$VERSION"'
+    - step: &push-to-gcr
+        name: Push Docker Image to Google Container Registry
+        runs-on: 
+            - 'self.hosted'
+            - 'linux'
+            - 'gke'
+        services:
+          - docker
+        image: google/cloud-sdk:alpine
+        # trigger: manual  # Uncomment to make this a manual deployment.
+        script:
+          - source set_var.txt
+          - echo $nobu_digital_gcloud_apikey | base64 -d > ./gcloud-api-key.json
+          - gcloud auth activate-service-account --key-file gcloud-api-key.json
+          - gcloud config set project $nobu_digital_gcloud_projectid
+          - gcloud auth configure-docker -q
+          - cat ./gcloud-api-key.json | docker login -u _json_key --password-stdin https://gcr.io
+          - docker load --input dockerimg.tar
+          - docker push asia.gcr.io/$nobu_digital_gcloud_projectid/$REPO_NAME:$VERSION
+          # - gcloud container images describe asia.gcr.io/$nobu_digital_gcloud_projectid/$REPO_NAME:$VERSION --format="value(image_summary.fully_qualified_digest)"
+pipelines:
+  branches:
+    # master:
+    # - step: *definer    
+    # - step:  *lint-code
+    # - step: *build-nobu-fraud-master-binary
+    # - step: *build-image
+    # - step: *push-to-gcr
+    # - step: *push-to-artifact-registry
+    dlo-dev:
+    - step: *definer
+    - step: *build-image
+    - step: *push-to-artifact-registry
+    dlo-sit:
+    - step: *definer    
+    - step: *build-image
+    - step: *push-to-artifact-registry
+    dlo-uat:
+    - step: *definer
+    - step: *build-image
+    - step: *push-to-artifact-registry
