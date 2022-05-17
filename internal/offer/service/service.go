@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"errors"
+	"net/http"
 	"strconv"
 
 	modelLanding "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/domain/landing"
@@ -53,16 +54,16 @@ func (s service) UpdateLoanLimit(limit string) error {
 
 	return nil
 }
-func (s service) DeleteLoanLimit() error {
-	err := s.offerRepo.DeleteLoanLimit()
+func (s service) DeleteLoanLimit() (httpStatus int, err error) {
+	status, err := s.offerRepo.DeleteLoanLimit()
 	if err == sql.ErrNoRows {
-		return errors.New("Loan limit not found")
+		return status, errors.New("Loan limit not found")
 	}
 	if err != nil {
-		return err
+		return http.StatusInternalServerError, err
 	}
 
-	return nil
+	return http.StatusOK, nil
 }
 
 //Benefit
@@ -96,15 +97,15 @@ func (s service) UpdateBenefitByID(id int64, params data.Params, path string) er
 
 	return nil
 }
-func (s service) DeleteBenefitByID(id int64) error {
-	err := s.offerRepo.DeleteBenefitByID(id)
+func (s service) DeleteBenefitByID(id int64) (httpStatus int, err error) {
+	status, err := s.offerRepo.DeleteBenefitByID(id)
 	if err == sql.ErrNoRows {
-		return errors.New("Benefit ID not found")
+		return status, errors.New("Benefit ID not found")
 	}
 	if err != nil {
-		return err
+		return http.StatusInternalServerError, err
 	}
-	return nil
+	return http.StatusOK, nil
 }
 
 //Loan method
@@ -137,15 +138,15 @@ func (s service) UpdateLoanMethodByID(id int64, title string, description string
 
 	return nil
 }
-func (s service) DeleteLoanMethodByID(id int64) error {
-	err := s.offerRepo.DeleteLoanMethodByID(id)
+func (s service) DeleteLoanMethodByID(id int64) (httpStatus int, err error) {
+	status, err := s.offerRepo.DeleteLoanMethodByID(id)
 	if err == sql.ErrNoRows {
-		return errors.New("Loan method ID not found")
+		return status, errors.New("Loan method ID not found")
 	}
 	if err != nil {
-		return err
+		return http.StatusInternalServerError, err
 	}
-	return nil
+	return http.StatusOK, nil
 }
 
 //Tnc
@@ -177,15 +178,15 @@ func (s service) UpdateTncByID(id int64, params data.Params) error {
 
 	return nil
 }
-func (s service) DeleteTncByID(id int64) error {
-	err := s.offerRepo.DeleteTncByID(id)
+func (s service) DeleteTncByID(id int64) (httpStatus int, err error) {
+	status, err := s.offerRepo.DeleteTncByID(id)
 	if err == sql.ErrNoRows {
-		return errors.New("Tnc ID not found")
+		return status, errors.New("Tnc ID not found")
 	}
 	if err != nil {
-		return err
+		return http.StatusInternalServerError, err
 	}
-	return nil
+	return http.StatusOK, nil
 }
 
 //Tnc title
@@ -218,15 +219,15 @@ func (s service) UpdateTncTitleByID(id int64, params data.Params) error {
 
 	return nil
 }
-func (s service) DeleteTncTitleByID(id int64) error {
-	err := s.offerRepo.DeleteTncTitleByID(id)
+func (s service) DeleteTncTitleByID(id int64) (httpStatus int, err error) {
+	status, err := s.offerRepo.DeleteTncTitleByID(id)
 	if err == sql.ErrNoRows {
-		return errors.New("Tnc title ID not found")
+		return status, errors.New("Tnc title ID not found")
 	}
 	if err != nil {
-		return err
+		return http.StatusInternalServerError, err
 	}
-	return nil
+	return http.StatusOK, nil
 }
 
 //Tnc subtitle
@@ -259,15 +260,15 @@ func (s service) UpdateTncSubtitleByID(id int64, params data.Params) error {
 
 	return nil
 }
-func (s service) DeleteTncSubtitleByID(id int64) error {
-	err := s.offerRepo.DeleteTncSubtitleByID(id)
+func (s service) DeleteTncSubtitleByID(id int64) (httpStatus int, err error) {
+	status, err := s.offerRepo.DeleteTncSubtitleByID(id)
 	if err == sql.ErrNoRows {
-		return errors.New("Tnc subtitle ID not found")
+		return status, errors.New("Tnc subtitle ID not found")
 	}
 	if err != nil {
-		return err
+		return http.StatusInternalServerError, err
 	}
-	return nil
+	return http.StatusOK, nil
 }
 
 //Tnc explain
@@ -305,15 +306,15 @@ func (s service) UpdateTncExplainByID(id int64, params data.Params) error {
 
 	return nil
 }
-func (s service) DeleteTncExplainByID(id int64) error {
-	err := s.offerRepo.DeleteTncExplainByID(id)
+func (s service) DeleteTncExplainByID(id int64) (httpStatus int, err error) {
+	status, err := s.offerRepo.DeleteTncExplainByID(id)
 	if err == sql.ErrNoRows {
-		return errors.New("Tnc explain ID not found")
+		return status, errors.New("Tnc explain ID not found")
 	}
 	if err != nil {
-		return err
+		return http.StatusInternalServerError, err
 	}
-	return nil
+	return http.StatusOK, nil
 }
 
 //Paylater Offer Page - Landing Page

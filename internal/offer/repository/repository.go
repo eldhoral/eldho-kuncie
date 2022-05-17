@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"net/http"
 	"strconv"
 
 	modelLanding "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/domain/landing"
@@ -62,14 +63,14 @@ func (r repo) UpdateLoanLimit(limit string) (int64, error) {
 	}
 	return count, nil
 }
-func (r repo) DeleteLoanLimit() error {
+func (r repo) DeleteLoanLimit() (httpStatus int, err error) {
 	query := `DELETE FROM tbl_loan_limit ORDER BY id ASC LIMIT 1`
-	_, err := r.db.Exec(query)
+	_, err = r.db.Exec(query)
 	if err != nil {
-		return err
+		return http.StatusNotFound, err
 	}
 
-	return nil
+	return http.StatusOK, nil
 }
 
 //Benefit
@@ -133,14 +134,14 @@ func (r repo) UpdateBenefitByID(id int64, params data.Params, path string) (int6
 	}
 	return count, nil
 }
-func (r repo) DeleteBenefitByID(id int64) error {
+func (r repo) DeleteBenefitByID(id int64) (httpStatus int, err error) {
 	query := `DELETE FROM tbl_benefit WHERE id = ?`
-	_, err := r.db.Exec(query, id)
+	_, err = r.db.Exec(query, id)
 	if err != nil {
-		return err
+		return http.StatusNotFound, err
 	}
 
-	return nil
+	return http.StatusOK, nil
 }
 
 //Loan method
@@ -187,14 +188,14 @@ func (r repo) UpdateLoanMethodByID(id int64, title string, description string) (
 	}
 	return count, nil
 }
-func (r repo) DeleteLoanMethodByID(id int64) error {
+func (r repo) DeleteLoanMethodByID(id int64) (httpStatus int, err error) {
 	query := `DELETE FROM tbl_loan_method WHERE id = ?`
-	_, err := r.db.Exec(query, id)
+	_, err = r.db.Exec(query, id)
 	if err != nil {
-		return err
+		return http.StatusNotFound, err
 	}
 
-	return nil
+	return http.StatusOK, nil
 }
 
 //Tnc
@@ -239,14 +240,14 @@ func (r repo) UpdateTncByID(id int64, params data.Params) (int64, error) {
 	}
 	return count, nil
 }
-func (r repo) DeleteTncByID(id int64) error {
+func (r repo) DeleteTncByID(id int64) (httpStatus int, err error) {
 	query := `DELETE FROM tbl_tnc WHERE id = ?`
-	_, err := r.db.Exec(query, id)
+	_, err = r.db.Exec(query, id)
 	if err != nil {
-		return err
+		return http.StatusNotFound, err
 	}
 
-	return nil
+	return http.StatusOK, nil
 }
 
 //Tnc title
@@ -299,14 +300,14 @@ func (r repo) UpdateTncTitleByID(id int64, params data.Params) (int64, error) {
 	}
 	return count, nil
 }
-func (r repo) DeleteTncTitleByID(id int64) error {
+func (r repo) DeleteTncTitleByID(id int64) (httpStatus int, err error) {
 	query := `DELETE FROM tbl_tnc_title WHERE id = ?`
-	_, err := r.db.Exec(query, id)
+	_, err = r.db.Exec(query, id)
 	if err != nil {
-		return err
+		return http.StatusNotFound, err
 	}
 
-	return nil
+	return http.StatusOK, nil
 }
 
 //Tnc subtitle
@@ -359,14 +360,14 @@ func (r repo) UpdateTncSubtitleByID(id int64, params data.Params) (int64, error)
 	}
 	return count, nil
 }
-func (r repo) DeleteTncSubtitleByID(id int64) error {
+func (r repo) DeleteTncSubtitleByID(id int64) (httpStatus int, err error) {
 	query := `DELETE FROM tbl_tnc_subtitle WHERE id = ?`
-	_, err := r.db.Exec(query, id)
+	_, err = r.db.Exec(query, id)
 	if err != nil {
-		return err
+		return http.StatusNotFound, err
 	}
 
-	return nil
+	return http.StatusOK, nil
 }
 
 //Tnc explain
@@ -428,12 +429,12 @@ func (r repo) UpdateTncExplainByID(id int64, params data.Params) (int64, error) 
 	}
 	return count, nil
 }
-func (r repo) DeleteTncExplainByID(id int64) error {
+func (r repo) DeleteTncExplainByID(id int64) (httpStatus int, err error) {
 	query := `DELETE FROM tbl_tnc_explain WHERE id = ?`
-	_, err := r.db.Exec(query, id)
+	_, err = r.db.Exec(query, id)
 	if err != nil {
-		return err
+		return http.StatusNotFound, err
 	}
 
-	return nil
+	return http.StatusOK, nil
 }
