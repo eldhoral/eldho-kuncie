@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/app"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data"
@@ -291,6 +292,390 @@ func (h HTTPHandler) DeleteLoanMethod(ctx *app.Context) *server.Response {
 	return h.AsMobileJson(ctx, http.StatusOK, "Delete Loan Method Successfully", err)
 }
 
+// TncByID for h.Route("GET", "/tnc/detail/{id:[0-9]+}", h.OfferService.TncByID)
+func (h HTTPHandler) TncByID(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	service, err := h.OfferService.GetTncByID(id)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Successfully", service)
+}
+
+// TncList for h.Route("GET", "/tnc/list", h.OfferService.ListTnc)
+func (h HTTPHandler) TncList(ctx *app.Context) *server.Response {
+	service, err := h.OfferService.ListTnc()
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc List Successfully", service)
+}
+
+// CreateTnc for h.Route("POST", "/tnc/create", h.OfferService.CreateTnc)
+func (h HTTPHandler) CreateTnc(ctx *app.Context) *server.Response {
+	formBody := ctx.GetFormBody()
+	if formBody != nil {
+		title := formBody["title"]
+		if title == "" {
+			return h.AsMobileJson(ctx, http.StatusForbidden, "Title must be filled", constant.EmptyArray)
+		}
+	}
+
+	if formBody == nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, "Body form is a must", constant.EmptyArray)
+	}
+
+	title := ctx.Request.FormValue("title")
+
+	service, err := h.OfferService.CreateTnc(title)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Create Tnc Successfully", service)
+}
+
+// UpdateTnc for h.Route("POST", "/tnc/update/{id:[0-9]+}", h.OfferService.UpdateTnc)
+func (h HTTPHandler) UpdateTnc(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	formBody := ctx.GetFormBody()
+	if formBody == nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, "Body form is a must", constant.EmptyArray)
+	}
+
+	title := ctx.Request.FormValue("title")
+	params := data.NewParamsWrapper()
+	params.Add("title", title)
+
+	err := h.OfferService.UpdateTncByID(id, params)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Update Tnc Successfully", err)
+}
+
+// DeleteTnc for h.Route("POST", "/tnc/delete/{id:[0-9]+}", h.OfferService.DeleteTnc)
+func (h HTTPHandler) DeleteTnc(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	err := h.OfferService.DeleteTncByID(id)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Delete Tnc Successfully", err)
+}
+
+// TncTitleByID for h.Route("GET", "/tnc/title/detail/{id:[0-9]+}", h.OfferService.TncTitleByID)
+func (h HTTPHandler) TncTitleByID(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	service, err := h.OfferService.GetTncTitleByID(id)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Title Successfully", service)
+}
+
+// TncTitleList for h.Route("GET", "/tnc/title/list", h.OfferService.TncTitleList)
+func (h HTTPHandler) TncTitleList(ctx *app.Context) *server.Response {
+	service, err := h.OfferService.ListTncTitle()
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Title List Successfully", service)
+}
+
+// CreateTncTitle for h.Route("POST", "/tnc/title/create", h.OfferService.CreateTncTitle)
+func (h HTTPHandler) CreateTncTitle(ctx *app.Context) *server.Response {
+	formBody := ctx.GetFormBody()
+	if formBody != nil {
+		idTnc := formBody["id_tnc"]
+		if idTnc == "" {
+			return h.AsMobileJson(ctx, http.StatusForbidden, "ID Tnc must be filled", constant.EmptyArray)
+		}
+		title := formBody["title"]
+		if title == "" {
+			return h.AsMobileJson(ctx, http.StatusForbidden, "Title must be filled", constant.EmptyArray)
+		}
+	}
+
+	if formBody == nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, "Body form is a must", constant.EmptyArray)
+	}
+
+	idTnc, err := strconv.Atoi(ctx.Request.FormValue("id_tnc"))
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+	title := ctx.Request.FormValue("title")
+	service, err := h.OfferService.CreateTncTitle(int64(idTnc), title)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Create Tnc Title Successfully", service)
+}
+
+// UpdateTncTitle for h.Route("POST", "/tnc/title/update/{id:[0-9]+}", h.OfferService.UpdateTncTitle)
+func (h HTTPHandler) UpdateTncTitle(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	formBody := ctx.GetFormBody()
+	if formBody == nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, "Body form is a must", constant.EmptyArray)
+	}
+
+	idTnc := ctx.Request.FormValue("id_tnc")
+	title := ctx.Request.FormValue("title")
+	params := data.NewParamsWrapper()
+	params.Add("id_tnc", idTnc)
+	params.Add("title", title)
+
+	err := h.OfferService.UpdateTncTitleByID(id, params)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Update Tnc Title Successfully", err)
+}
+
+// DeleteTncTitle for h.Route("POST", "/tnc/title/delete/{id:[0-9]+}", h.OfferService.DeleteTncTitle)
+func (h HTTPHandler) DeleteTncTitle(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	err := h.OfferService.DeleteTncTitleByID(id)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Delete Tnc Title Successfully", err)
+}
+
+// TncSubtitleByID for h.Route("GET", "/tnc/subtitle/detail/{id:[0-9]+}", h.OfferService.TncSubtitleByID)
+func (h HTTPHandler) TncSubtitleByID(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	service, err := h.OfferService.GetTncSubtitleByID(id)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Subtitle Successfully", service)
+}
+
+// TncSubtitleList for h.Route("GET", "/tnc/subtitle/list", h.OfferService.TncSubtitleList)
+func (h HTTPHandler) TncSubtitleList(ctx *app.Context) *server.Response {
+	service, err := h.OfferService.ListTncSubtitle()
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Subtitle List Successfully", service)
+}
+
+// CreateTncSubtitle for h.Route("POST", "/tnc/subtitle/create", h.OfferService.CreateTncSubtitle)
+func (h HTTPHandler) CreateTncSubtitle(ctx *app.Context) *server.Response {
+	formBody := ctx.GetFormBody()
+	if formBody != nil {
+		idTncTitle := formBody["id_tnc_title"]
+		if idTncTitle == "" {
+			return h.AsMobileJson(ctx, http.StatusForbidden, "ID Tnc Title must be filled", constant.EmptyArray)
+		}
+		subtitle := formBody["subtitle"]
+		if subtitle == "" {
+			return h.AsMobileJson(ctx, http.StatusForbidden, "Subtitle must be filled", constant.EmptyArray)
+		}
+	}
+
+	if formBody == nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, "Body form is a must", constant.EmptyArray)
+	}
+
+	idTncTitle, err := strconv.Atoi(ctx.Request.FormValue("id_tnc_title"))
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+	subtitle := ctx.Request.FormValue("subtitle")
+	service, err := h.OfferService.CreateTncSubtitle(int64(idTncTitle), subtitle)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Create Tnc Title Successfully", service)
+}
+
+// UpdateTncTitle for h.Route("POST", "/tnc/subtitle/update/{id:[0-9]+}", h.OfferService.UpdateTncTitle)
+func (h HTTPHandler) UpdateTncSubtitle(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	formBody := ctx.GetFormBody()
+	if formBody == nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, "Body form is a must", constant.EmptyArray)
+	}
+
+	idTncTitle := ctx.Request.FormValue("id_tnc_title")
+	subtitle := ctx.Request.FormValue("subtitle")
+	params := data.NewParamsWrapper()
+	params.Add("id_tnc_title", idTncTitle)
+	params.Add("subtitle", subtitle)
+
+	err := h.OfferService.UpdateTncSubtitleByID(id, params)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Update Tnc Subtitle Successfully", err)
+}
+
+// DeleteTncTitle for h.Route("POST", "/tnc/subtitle/delete/{id:[0-9]+}", h.OfferService.DeleteTncTitle)
+func (h HTTPHandler) DeleteTncSubtitle(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	err := h.OfferService.DeleteTncSubtitleByID(id)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Delete Tnc Subtitle Successfully", err)
+}
+
+// TncExplainByID for h.Route("GET", "/tnc/explain/detail/{id:[0-9]+}", h.OfferService.TncExplainByID)
+func (h HTTPHandler) TncExplainByID(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	service, err := h.OfferService.GetTncExplainByID(id)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Explain Successfully", service)
+}
+
+// TncExplainList for h.Route("GET", "/tnc/explain/list", h.OfferService.TncExplainList)
+func (h HTTPHandler) TncExplainList(ctx *app.Context) *server.Response {
+	service, err := h.OfferService.ListTncExplain()
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Explain List Successfully", service)
+}
+
+// CreateTncExplain for h.Route("POST", "/tnc/explain/create", h.OfferService.CreateTncExplain)
+func (h HTTPHandler) CreateTncExplain(ctx *app.Context) *server.Response {
+	formBody := ctx.GetFormBody()
+	if formBody != nil {
+		idTnc := formBody["id_tnc"]
+		if idTnc == "" {
+			return h.AsMobileJson(ctx, http.StatusForbidden, "ID Tnc must be filled", constant.EmptyArray)
+		}
+		idTncTitle := formBody["id_tnc_title"]
+		if idTncTitle == "" {
+			return h.AsMobileJson(ctx, http.StatusForbidden, "ID Tnc Title must be filled", constant.EmptyArray)
+		}
+		description := formBody["description"]
+		if description == "" {
+			return h.AsMobileJson(ctx, http.StatusForbidden, "Description must be filled", constant.EmptyArray)
+		}
+	}
+
+	if formBody == nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, "Body form is a must", constant.EmptyArray)
+	}
+
+	idTnc, err := strconv.Atoi(ctx.Request.FormValue("id_tnc"))
+	idTncTitle, err := strconv.Atoi(ctx.Request.FormValue("id_tnc_title"))
+	idTncSubtitle, _ := strconv.Atoi(ctx.Request.FormValue("id_tnc_subtitle"))
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+	idTncSubtitleConverted := int64(idTncSubtitle)
+	description := ctx.Request.FormValue("description")
+	service, err := h.OfferService.CreateTncExplain(int64(idTnc), int64(idTncTitle), &idTncSubtitleConverted, description)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Create Tnc Explain Successfully", service)
+}
+
+// UpdateTncExplain for h.Route("POST", "/tnc/explain/update/{id:[0-9]+}", h.OfferService.UpdateTncExplain)
+func (h HTTPHandler) UpdateTncExplain(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	formBody := ctx.GetFormBody()
+	if formBody == nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, "Body form is a must", constant.EmptyArray)
+	}
+
+	description := ctx.Request.FormValue("description")
+	params := data.NewParamsWrapper()
+	params.Add("description", description)
+
+	err := h.OfferService.UpdateTncExplainByID(id, params)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Update Tnc Explain Successfully", err)
+}
+
+// DeleteTncExplain for h.Route("POST", "/tnc/explain/delete/{id:[0-9]+}", h.OfferService.DeleteTncExplain)
+func (h HTTPHandler) DeleteTncExplain(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
+	}
+
+	err := h.OfferService.DeleteTncExplainByID(id)
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Delete Tnc Explain Successfully", err)
+}
+
 // LandingPage for h.Route("GET", "/landingpage", h.OfferService.GetLandingPage)
 func (h HTTPHandler) LandingPage(ctx *app.Context) *server.Response {
 	service, err := h.OfferService.GetLandingPage()
@@ -299,4 +684,14 @@ func (h HTTPHandler) LandingPage(ctx *app.Context) *server.Response {
 	}
 
 	return h.AsMobileJson(ctx, http.StatusOK, "Get Landing Page Successfully", service)
+}
+
+// TncPage for h.Route("GET", "/tncpage", h.OfferService.TncPage)
+func (h HTTPHandler) TncPage(ctx *app.Context) *server.Response {
+	service, err := h.OfferService.GetTncPage()
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusForbidden, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, http.StatusOK, "Get TNC Page Successfully", service)
 }

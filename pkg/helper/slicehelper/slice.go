@@ -1,5 +1,7 @@
 package slicehelper
 
+import "reflect"
+
 //UniqueSlices Remove duplicate elements on slice of string
 func UniqueSlices(arr []string) []string {
 	size := len(arr)
@@ -53,4 +55,16 @@ func InArray(key interface{}, array interface{}) bool {
 func KeyExists(decoded map[string]interface{}, key string) bool {
 	val, ok := decoded[key]
 	return ok && val != nil
+}
+
+func NilFields(x interface{}) bool {
+	rv := reflect.ValueOf(x)
+	rv = rv.Elem()
+
+	for i := 0; i < rv.NumField(); i++ {
+		if !rv.Field(i).IsNil() {
+			return false
+		}
+	}
+	return true
 }

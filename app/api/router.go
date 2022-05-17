@@ -33,8 +33,39 @@ func (h *HttpServe) setupRouter() {
 	h.Route("POST", "/loanmethod/update/{id:[0-9]+}", h.offer.UpdateLoanMethod)
 	h.Route("DELETE", "/loanmethod/delete/{id:[0-9]+}", h.offer.DeleteLoanMethod)
 
+	// Tnc
+	h.Route("GET", "/tnc/detail/{id:[0-9]+}", h.offer.TncByID)
+	h.Route("GET", "/tnc/list", h.offer.TncList)
+	h.Route("POST", "/tnc/create", h.offer.CreateTnc)
+	h.Route("POST", "/tnc/update/{id:[0-9]+}", h.offer.UpdateTnc)
+	h.Route("DELETE", "/tnc/delete/{id:[0-9]+}", h.offer.DeleteTnc)
+
+	// Tnc Title
+	h.Route("GET", "/tnc/title/detail/{id:[0-9]+}", h.offer.TncTitleByID)
+	h.Route("GET", "/tnc/title/list", h.offer.TncTitleList)
+	h.Route("POST", "/tnc/title/create", h.offer.CreateTncTitle)
+	h.Route("POST", "/tnc/title/update/{id:[0-9]+}", h.offer.UpdateTncTitle)
+	h.Route("DELETE", "/tnc/title/delete/{id:[0-9]+}", h.offer.DeleteTncTitle)
+
+	// Tnc Subtitle
+	h.Route("GET", "/tnc/subtitle/detail/{id:[0-9]+}", h.offer.TncSubtitleByID)
+	h.Route("GET", "/tnc/subtitle/list", h.offer.TncSubtitleList)
+	h.Route("POST", "/tnc/subtitle/create", h.offer.CreateTncSubtitle)
+	h.Route("POST", "/tnc/subtitle/update/{id:[0-9]+}", h.offer.UpdateTncSubtitle)
+	h.Route("DELETE", "/tnc/subtitle/delete/{id:[0-9]+}", h.offer.DeleteTncSubtitle)
+
+	// Tnc Explain
+	h.Route("GET", "/tnc/explain/detail/{id:[0-9]+}", h.offer.TncExplainByID)
+	h.Route("GET", "/tnc/explain/list", h.offer.TncExplainList)
+	h.Route("POST", "/tnc/explain/create", h.offer.CreateTncExplain)
+	h.Route("POST", "/tnc/explain/update/{id:[0-9]+}", h.offer.UpdateTncExplain)
+	h.Route("DELETE", "/tnc/explain/delete/{id:[0-9]+}", h.offer.DeleteTncExplain)
+
 	// Landing Page
 	h.Route("GET", "/landingpage", h.offer.LandingPage)
+
+	// Tnc Page
+	h.Route("GET", "/tncpage", h.offer.TncPage)
 
 	// Serve static image
 	h.static = h.router.PathPrefix("/assets/upload/image/").Handler(http.StripPrefix("/assets/upload/image/", http.FileServer(http.Dir("./assets/upload/image"))))
