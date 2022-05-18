@@ -53,4 +53,5 @@ Thumbs.db
 dbconfig.yml
 docker-compose.yml
 ./params/.env
+bin
 

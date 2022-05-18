@@ -21,7 +21,7 @@ var rootCmd = &cobra.Command{
 //register command
 func init() {
 	//load environment variable
-	if err := godotenv.Load(); err != nil && err.Error() != errs.ErrNoSuchFile {
+	if err := godotenv.Load("./params/.env"); err != nil && err.Error() != errs.ErrNoSuchFile {
 		logrus.Fatalln("unable to load environment variable", err.Error())
 	}
 
