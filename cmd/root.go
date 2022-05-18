@@ -20,16 +20,15 @@ var rootCmd = &cobra.Command{
 
 //register command
 func init() {
-	rootCmd.AddCommand(HttpCmd)
-
 	//load environment variable
 	if err := godotenv.Load(); err != nil && err.Error() != errs.ErrNoSuchFile {
 		logrus.Fatalln("unable to load environment variable", err.Error())
 	}
+
+	rootCmd.AddCommand(HttpCmd)
 }
 
 func Execute() error {
-
 	cmd, _, err := rootCmd.Find(os.Args[1:])
 
 	// Default run main http if not set

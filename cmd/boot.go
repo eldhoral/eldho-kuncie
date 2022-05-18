@@ -7,11 +7,13 @@ import (
 	ofRepo "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/repository"
 	ofService "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/service"
 
+	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/handler"
 
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/db"
+	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/errs"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/httpclient"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/metric"
 
@@ -30,6 +32,12 @@ var (
 	statsdMonitoring metric.StatsdMonitoring
 )
 
+func initEnv() {
+	if err := godotenv.Load("./params/.env"); err != nil && err.Error() != errs.ErrNoSuchFile {
+		logrus.Fatalln("unable to load environment variable", err.Error())
+	}
+}
+
 func initMySQL() {
 	host := os.Getenv("DB_HOST")
 	port, _ := strconv.Atoi(os.Getenv("DB_PORT"))
@@ -41,6 +49,7 @@ func initMySQL() {
 }
 
 func initInfrastructure() {
+	initEnv()
 	initMySQL()
 	initLog() // Init log after baseHandler
 
