@@ -12,12 +12,12 @@ import (
 
 // LoanLimitDetail for h.Route("GET", "/loanlimit/detail", h.OfferService.GetLoanLimit)
 func (h HTTPHandler) LoanLimitDetail(ctx *app.Context) *server.Response {
-	service, err := h.OfferService.GetLoanLimit()
+	httpStatus, service, err := h.OfferService.GetLoanLimit()
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Loan Limit Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Loan Limit Successfully", service)
 }
 
 // LoanLimitDetailByID for h.Route("GET", "/loanlimit/detail/{id:[0-9]+}", h.OfferService.GetLoanLimit)
@@ -27,12 +27,12 @@ func (h HTTPHandler) LoanLimitDetailByID(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
 	}
 
-	service, err := h.OfferService.GetLoanLimitByID(id)
+	httpStatus, service, err := h.OfferService.GetLoanLimitByID(id)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Loan Limit Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Loan Limit Successfully", service)
 }
 
 // CreateLoanLimit for h.Route("POST", "/loanlimit/create", h.OfferService.CreateLoanLimit)
@@ -45,12 +45,12 @@ func (h HTTPHandler) CreateLoanLimit(ctx *app.Context) *server.Response {
 			return h.AsMobileJson(ctx, http.StatusBadRequest, "Limit must be filled", constant.EmptyArray)
 		}
 	}
-	service, err := h.OfferService.CreateLoanLimit(ctx.Request.FormValue("limit"))
+	httpStatus, service, err := h.OfferService.CreateLoanLimit(ctx.Request.FormValue("limit"))
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusCreated, "Create Loan Limit Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Create Loan Limit Successfully", service)
 }
 
 // UpdateLoanLimit for h.Route("POST", "/loanlimit/update", h.OfferService.UpdateLoanLimit)
@@ -60,12 +60,12 @@ func (h HTTPHandler) UpdateLoanLimit(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Limit must be filled", constant.EmptyArray)
 	}
 
-	err := h.OfferService.UpdateLoanLimit(limit)
+	httpStatus, err := h.OfferService.UpdateLoanLimit(limit)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Create Loan Limit Successfully", err)
+	return h.AsMobileJson(ctx, httpStatus, "Create Loan Limit Successfully", err)
 }
 
 // DeleteLoanLimit for h.Route("POST", "/loanlimit/delete", h.OfferService.DeleteLoanLimit)
@@ -85,22 +85,22 @@ func (h HTTPHandler) BenefitByID(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
 	}
 
-	service, err := h.OfferService.GetBenefitByID(id)
+	httpStatus, service, err := h.OfferService.GetBenefitByID(id)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Benefit Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Benefit Successfully", service)
 }
 
 // BenefitList for h.Route("GET", "/benefit/list", h.OfferService.BenefitList)
 func (h HTTPHandler) BenefitList(ctx *app.Context) *server.Response {
-	service, err := h.OfferService.ListBenefit()
+	httpStatus, service, err := h.OfferService.ListBenefit()
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Benefit List Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Benefit List Successfully", service)
 }
 
 // CreateBenefit for h.Route("POST", "/benefit/create", h.OfferService.CreateBenefit)
@@ -132,12 +132,12 @@ func (h HTTPHandler) CreateBenefit(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Image must be filled", constant.EmptyArray)
 	}
 
-	service, err := h.OfferService.CreateBenefit(title, description, image.Path)
+	httpStatus, service, err := h.OfferService.CreateBenefit(title, description, image.Path)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusCreated, "Create Benefit Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Create Benefit Successfully", service)
 }
 
 // UpdateBenefit for h.Route("POST", "/benefit/update{id:[0-9]+}", h.OfferService.UpdateBenefit)
@@ -149,7 +149,7 @@ func (h HTTPHandler) UpdateBenefit(ctx *app.Context) *server.Response {
 
 	formBody := ctx.GetFormBody()
 	if formBody == nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, "Body form is a must", constant.EmptyArray)
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Body form is a must", constant.EmptyArray)
 	}
 
 	title := ctx.Request.FormValue("title")
@@ -161,27 +161,27 @@ func (h HTTPHandler) UpdateBenefit(ctx *app.Context) *server.Response {
 	if asset != nil {
 		image, err := ctx.GetUploadFile("image")
 		if err != nil {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, err.Error(), nil)
-		}
-
-		err = h.OfferService.UpdateBenefitByID(id, params, image.Path)
-		if err != nil {
 			return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
 		}
 
-		return h.AsMobileJson(ctx, http.StatusOK, "Update Benefit Successfully", err)
+		httpStatus, err := h.OfferService.UpdateBenefitByID(id, params, image.Path)
+		if err != nil {
+			return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
+		}
+
+		return h.AsMobileJson(ctx, httpStatus, "Update Benefit Successfully", err)
 	}
 
 	if title == "" && description == "" && asset == nil {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Value form is a must to one of these", constant.EmptyArray)
 	}
 
-	err := h.OfferService.UpdateBenefitByID(id, params, "")
+	httpStatus, err := h.OfferService.UpdateBenefitByID(id, params, "")
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Update Benefit Successfully", err)
+	return h.AsMobileJson(ctx, httpStatus, "Update Benefit Successfully", err)
 }
 
 // DeleteBenefit for h.Route("POST", "/benefit/delete{id:[0-9]+}", h.OfferService.DeleteBenefit)
@@ -206,22 +206,22 @@ func (h HTTPHandler) LoanMethodByID(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
 	}
 
-	service, err := h.OfferService.GetLoanMethodByID(id)
+	httpStatus, service, err := h.OfferService.GetLoanMethodByID(id)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Loan Method Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Loan Method Successfully", service)
 }
 
 // LoanMethodList for h.Route("GET", "/loanmethod/list", h.OfferService.LoanMethodList)
 func (h HTTPHandler) LoanMethodList(ctx *app.Context) *server.Response {
-	service, err := h.OfferService.ListLoanMethod()
+	httpStatus, service, err := h.OfferService.ListLoanMethod()
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Loan Method List Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Loan Method List Successfully", service)
 }
 
 // CreateLoanMethod for h.Route("POST", "/loanmethod/create", h.OfferService.CreateLoanMethod)
@@ -245,12 +245,12 @@ func (h HTTPHandler) CreateLoanMethod(ctx *app.Context) *server.Response {
 	title := ctx.Request.FormValue("title")
 	description := ctx.Request.FormValue("description")
 
-	service, err := h.OfferService.CreateLoanMethod(title, description)
+	httpStatus, service, err := h.OfferService.CreateLoanMethod(title, description)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusCreated, "Create Loan Method Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Create Loan Method Successfully", service)
 }
 
 // UpdateLoanMethod for h.Route("POST", "/loanmethod/update{id:[0-9]+}", h.OfferService.UpdateLoanMethod)
@@ -272,12 +272,12 @@ func (h HTTPHandler) UpdateLoanMethod(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Value form is a must to one of these", constant.EmptyArray)
 	}
 
-	err := h.OfferService.UpdateLoanMethodByID(id, title, description)
+	httpStatus, err := h.OfferService.UpdateLoanMethodByID(id, title, description)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Update Loan Method Successfully", err)
+	return h.AsMobileJson(ctx, httpStatus, "Update Loan Method Successfully", err)
 }
 
 // DeleteLoanMethod for h.Route("POST", "/loanmethod/delete{id:[0-9]+}", h.OfferService.DeleteLoanMethod)
@@ -302,22 +302,22 @@ func (h HTTPHandler) TncByID(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
 	}
 
-	service, err := h.OfferService.GetTncByID(id)
+	httpStatus, service, err := h.OfferService.GetTncByID(id)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Tnc Successfully", service)
 }
 
 // TncList for h.Route("GET", "/tnc/list", h.OfferService.ListTnc)
 func (h HTTPHandler) TncList(ctx *app.Context) *server.Response {
-	service, err := h.OfferService.ListTnc()
+	httpStatus, service, err := h.OfferService.ListTnc()
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc List Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Tnc List Successfully", service)
 }
 
 // CreateTnc for h.Route("POST", "/tnc/create", h.OfferService.CreateTnc)
@@ -336,12 +336,12 @@ func (h HTTPHandler) CreateTnc(ctx *app.Context) *server.Response {
 
 	title := ctx.Request.FormValue("title")
 
-	service, err := h.OfferService.CreateTnc(title)
+	httpStatus, service, err := h.OfferService.CreateTnc(title)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusCreated, "Create Tnc Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Create Tnc Successfully", service)
 }
 
 // UpdateTnc for h.Route("POST", "/tnc/update/{id:[0-9]+}", h.OfferService.UpdateTnc)
@@ -360,12 +360,12 @@ func (h HTTPHandler) UpdateTnc(ctx *app.Context) *server.Response {
 	params := data.NewParamsWrapper()
 	params.Add("title", title)
 
-	err := h.OfferService.UpdateTncByID(id, params)
+	httpStatus, err := h.OfferService.UpdateTncByID(id, params)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Update Tnc Successfully", err)
+	return h.AsMobileJson(ctx, httpStatus, "Update Tnc Successfully", err)
 }
 
 // DeleteTnc for h.Route("POST", "/tnc/delete/{id:[0-9]+}", h.OfferService.DeleteTnc)
@@ -390,22 +390,22 @@ func (h HTTPHandler) TncTitleByID(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
 	}
 
-	service, err := h.OfferService.GetTncTitleByID(id)
+	httpStatus, service, err := h.OfferService.GetTncTitleByID(id)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Title Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Tnc Title Successfully", service)
 }
 
 // TncTitleList for h.Route("GET", "/tnc/title/list", h.OfferService.TncTitleList)
 func (h HTTPHandler) TncTitleList(ctx *app.Context) *server.Response {
-	service, err := h.OfferService.ListTncTitle()
+	httpStatus, service, err := h.OfferService.ListTncTitle()
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Title List Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Tnc Title List Successfully", service)
 }
 
 // CreateTncTitle for h.Route("POST", "/tnc/title/create", h.OfferService.CreateTncTitle)
@@ -431,12 +431,12 @@ func (h HTTPHandler) CreateTncTitle(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
 	}
 	title := ctx.Request.FormValue("title")
-	service, err := h.OfferService.CreateTncTitle(int64(idTnc), title)
+	httpStatus, service, err := h.OfferService.CreateTncTitle(int64(idTnc), title)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusCreated, "Create Tnc Title Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Create Tnc Title Successfully", service)
 }
 
 // UpdateTncTitle for h.Route("POST", "/tnc/title/update/{id:[0-9]+}", h.OfferService.UpdateTncTitle)
@@ -457,12 +457,12 @@ func (h HTTPHandler) UpdateTncTitle(ctx *app.Context) *server.Response {
 	params.Add("id_tnc", idTnc)
 	params.Add("title", title)
 
-	err := h.OfferService.UpdateTncTitleByID(id, params)
+	httpStatus, err := h.OfferService.UpdateTncTitleByID(id, params)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Update Tnc Title Successfully", err)
+	return h.AsMobileJson(ctx, httpStatus, "Update Tnc Title Successfully", err)
 }
 
 // DeleteTncTitle for h.Route("POST", "/tnc/title/delete/{id:[0-9]+}", h.OfferService.DeleteTncTitle)
@@ -487,22 +487,22 @@ func (h HTTPHandler) TncSubtitleByID(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
 	}
 
-	service, err := h.OfferService.GetTncSubtitleByID(id)
+	httpStatus, service, err := h.OfferService.GetTncSubtitleByID(id)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Subtitle Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Tnc Subtitle Successfully", service)
 }
 
 // TncSubtitleList for h.Route("GET", "/tnc/subtitle/list", h.OfferService.TncSubtitleList)
 func (h HTTPHandler) TncSubtitleList(ctx *app.Context) *server.Response {
-	service, err := h.OfferService.ListTncSubtitle()
+	httpStatus, service, err := h.OfferService.ListTncSubtitle()
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Subtitle List Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Tnc Subtitle List Successfully", service)
 }
 
 // CreateTncSubtitle for h.Route("POST", "/tnc/subtitle/create", h.OfferService.CreateTncSubtitle)
@@ -528,12 +528,12 @@ func (h HTTPHandler) CreateTncSubtitle(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
 	}
 	subtitle := ctx.Request.FormValue("subtitle")
-	service, err := h.OfferService.CreateTncSubtitle(int64(idTncTitle), subtitle)
+	httpStatus, service, err := h.OfferService.CreateTncSubtitle(int64(idTncTitle), subtitle)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusCreated, "Create Tnc Title Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Create Tnc Title Successfully", service)
 }
 
 // UpdateTncTitle for h.Route("POST", "/tnc/subtitle/update/{id:[0-9]+}", h.OfferService.UpdateTncTitle)
@@ -554,12 +554,12 @@ func (h HTTPHandler) UpdateTncSubtitle(ctx *app.Context) *server.Response {
 	params.Add("id_tnc_title", idTncTitle)
 	params.Add("subtitle", subtitle)
 
-	err := h.OfferService.UpdateTncSubtitleByID(id, params)
+	httpStatus, err := h.OfferService.UpdateTncSubtitleByID(id, params)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Update Tnc Subtitle Successfully", err)
+	return h.AsMobileJson(ctx, httpStatus, "Update Tnc Subtitle Successfully", err)
 }
 
 // DeleteTncTitle for h.Route("POST", "/tnc/subtitle/delete/{id:[0-9]+}", h.OfferService.DeleteTncTitle)
@@ -584,22 +584,22 @@ func (h HTTPHandler) TncExplainByID(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
 	}
 
-	service, err := h.OfferService.GetTncExplainByID(id)
+	httpStatus, service, err := h.OfferService.GetTncExplainByID(id)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Explain Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Tnc Explain Successfully", service)
 }
 
 // TncExplainList for h.Route("GET", "/tnc/explain/list", h.OfferService.TncExplainList)
 func (h HTTPHandler) TncExplainList(ctx *app.Context) *server.Response {
-	service, err := h.OfferService.ListTncExplain()
+	httpStatus, service, err := h.OfferService.ListTncExplain()
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Tnc Explain List Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Tnc Explain List Successfully", service)
 }
 
 // CreateTncExplain for h.Route("POST", "/tnc/explain/create", h.OfferService.CreateTncExplain)
@@ -632,12 +632,12 @@ func (h HTTPHandler) CreateTncExplain(ctx *app.Context) *server.Response {
 	}
 	idTncSubtitleConverted := int64(idTncSubtitle)
 	description := ctx.Request.FormValue("description")
-	service, err := h.OfferService.CreateTncExplain(int64(idTnc), int64(idTncTitle), &idTncSubtitleConverted, description)
+	httpStatus, service, err := h.OfferService.CreateTncExplain(int64(idTnc), int64(idTncTitle), &idTncSubtitleConverted, description)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusCreated, "Create Tnc Explain Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Create Tnc Explain Successfully", service)
 }
 
 // UpdateTncExplain for h.Route("POST", "/tnc/explain/update/{id:[0-9]+}", h.OfferService.UpdateTncExplain)
@@ -656,12 +656,12 @@ func (h HTTPHandler) UpdateTncExplain(ctx *app.Context) *server.Response {
 	params := data.NewParamsWrapper()
 	params.Add("description", description)
 
-	err := h.OfferService.UpdateTncExplainByID(id, params)
+	httpStatus, err := h.OfferService.UpdateTncExplainByID(id, params)
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Update Tnc Explain Successfully", err)
+	return h.AsMobileJson(ctx, httpStatus, "Update Tnc Explain Successfully", err)
 }
 
 // DeleteTncExplain for h.Route("POST", "/tnc/explain/delete/{id:[0-9]+}", h.OfferService.DeleteTncExplain)
@@ -681,20 +681,20 @@ func (h HTTPHandler) DeleteTncExplain(ctx *app.Context) *server.Response {
 
 // LandingPage for h.Route("GET", "/landingpage", h.OfferService.GetLandingPage)
 func (h HTTPHandler) LandingPage(ctx *app.Context) *server.Response {
-	service, err := h.OfferService.GetLandingPage()
+	httpStatus, service, err := h.OfferService.GetLandingPage()
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get Landing Page Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get Landing Page Successfully", service)
 }
 
 // TncPage for h.Route("GET", "/tncpage", h.OfferService.TncPage)
 func (h HTTPHandler) TncPage(ctx *app.Context) *server.Response {
-	service, err := h.OfferService.GetTncPage()
+	httpStatus, service, err := h.OfferService.GetTncPage()
 	if err != nil {
-		return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
 
-	return h.AsMobileJson(ctx, http.StatusOK, "Get TNC Page Successfully", service)
+	return h.AsMobileJson(ctx, httpStatus, "Get TNC Page Successfully", service)
 }
