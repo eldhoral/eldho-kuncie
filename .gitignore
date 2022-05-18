@@ -52,4 +52,5 @@ Thumbs.db
 .vscode
 dbconfig.yml
 docker-compose.yml
+./params/.env
 
