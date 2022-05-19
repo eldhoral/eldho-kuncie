@@ -1,5 +1,4 @@
--- +migrate Up
-CREATE TABLE `tbl_tnc_explain` (
+CREATE TABLE IF NOT EXISTS `tbl_tnc_explain` (
   `id` int NOT NULL AUTO_INCREMENT,
   `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `id_tnc` int NOT NULL,
@@ -16,5 +15,3 @@ CREATE TABLE `tbl_tnc_explain` (
   CONSTRAINT `tbl_tnc_explain_FK_2` FOREIGN KEY (`id_tnc_subtitle`) REFERENCES `tbl_tnc_subtitle` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
--- +migrate Down
-DROP TABLE tbl_tnc_explain;

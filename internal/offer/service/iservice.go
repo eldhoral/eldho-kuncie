@@ -7,6 +7,7 @@ import (
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data"
 )
 
+// Cost service
 type Service interface {
 	//CMS
 	//Loan limit

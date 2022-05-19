@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	abModule "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/handler"
 	ofModule "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/handler"
 
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/handler"
@@ -20,6 +21,7 @@ type HttpServe struct {
 
 	base  *handler.BaseHTTPHandler
 	offer *ofModule.HTTPHandler
+	about *abModule.HTTPHandler
 
 	v1     *mux.Router
 	static *mux.Route
@@ -37,10 +39,12 @@ func (h *HttpServe) Run() error {
 func New(appName string,
 	base *handler.BaseHTTPHandler,
 	offer *ofModule.HTTPHandler,
+	about *abModule.HTTPHandler,
 ) server.App {
 	return &HttpServe{
 		base:   base,
 		offer:  offer,
+		about:  about,
 		router: muxtrace.NewRouter(muxtrace.WithServiceName(appName)),
 	}
 }

@@ -20,7 +20,7 @@ var HttpCmd = &cobra.Command{
 		logrus.Infof("Starting the server at :%s", os.Getenv("HTTP_SERVER_PORT"))
 		initHTTP()
 
-		app := api.New(os.Getenv("APP_NAME"), baseHandler, offerHandler)
+		app := api.New(os.Getenv("APP_NAME"), baseHandler, offerHandler, aboutHandler)
 
 		echan := make(chan error)
 		go func() {

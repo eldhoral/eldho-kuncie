@@ -7,6 +7,10 @@ import (
 	ofRepo "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/repository"
 	ofService "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/service"
 
+	abModule "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/handler"
+	abRepo "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/repository"
+	abService "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/service"
+
 	"github.com/sirupsen/logrus"
 
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/handler"
@@ -24,6 +28,7 @@ var (
 
 	baseHandler  *handler.BaseHTTPHandler
 	offerHandler *ofModule.HTTPHandler
+	aboutHandler *abModule.HTTPHandler
 	httpClient   httpclient.Client
 
 	mysqlClientRepo  *db.MySQLClientRepository
@@ -66,13 +71,16 @@ func initHTTP() {
 	params["mysql_tz"] = mysqlClientRepo.TZ
 
 	offerRepo := ofRepo.NewRepository(mysqlClientRepo.DB)
+	aboutRepo := abRepo.NewRepository(mysqlClientRepo.DB)
 
 	offerService := ofService.NewService(offerRepo)
+	aboutService := abService.NewService(aboutRepo)
 
 	baseHandler = handler.NewBaseHTTPHandler(mysqlClientRepo.DB, httpClient, params,
-		offerService, statsdMonitoring)
+		offerService, aboutService, statsdMonitoring)
 
 	offerHandler = ofModule.NewHTTPHandler(baseHandler, offerService)
+	aboutHandler = abModule.NewHTTPHandler(baseHandler, aboutService)
 
 	fmt.Println("INFO: Init and load module completed. Server started.\n---")
 }
