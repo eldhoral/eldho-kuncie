@@ -30,6 +30,11 @@ func (r repo) ListCost() ([]modelCost.Cost, error) {
 	err := r.db.Select(&cost, "SELECT * FROM tbl_cost")
 	return cost, err
 }
+func (r repo) ListCostByIDLoanOption(idLoanOption int64) ([]modelCost.Cost, error) {
+	cost := []modelCost.Cost{}
+	err := r.db.Select(&cost, "SELECT * FROM tbl_cost where id_loan_option = ?", idLoanOption)
+	return cost, err
+}
 func (r repo) CreateCost(c *modelCost.Cost) (*modelCost.Cost, error) {
 	arg := map[string]interface{}{
 		"loan_option":    c.LoanOption,

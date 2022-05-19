@@ -2,6 +2,7 @@ package service
 
 import (
 	modelCost "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/domain/cost"
+	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/presenter/resp"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data"
 )
 
@@ -20,4 +21,8 @@ type Service interface {
 	CreateCostExplain(params data.Params) (int, *modelCost.CostExplanation, error)
 	UpdateCostExplainByID(id int64, params data.Params) (int, error)
 	DeleteCostExplainByID(id int64) (httpStatus int, err error)
+
+	//Page
+	//About Paylater - Penjelasan Biaya
+	GetCostExplanationPage(params data.Params) (int, *resp.CostExplanationPage, error)
 }
