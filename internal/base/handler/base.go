@@ -11,6 +11,7 @@ import (
 
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 
+	abSer "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/service"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/app"
 	ofSer "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/service"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/httpclient"
@@ -28,6 +29,7 @@ type BaseHTTPHandler struct {
 	HTTPClient       httpclient.Client
 	Params           map[string]string
 	OfferService     ofSer.Service
+	AboutService     abSer.Service
 	StatsdMonitoring metric.StatsdMonitoring
 }
 
@@ -36,12 +38,14 @@ func NewBaseHTTPHandler(
 	httpClient httpclient.Client,
 	params map[string]string,
 	offerService ofSer.Service,
+	aboutService abSer.Service,
 	statsdMonitoring metric.StatsdMonitoring,
 
 ) *BaseHTTPHandler {
 
 	return &BaseHTTPHandler{DB: db, HTTPClient: httpClient, Params: params,
 		OfferService:     offerService,
+		AboutService:     aboutService,
 		StatsdMonitoring: statsdMonitoring,
 	}
 }

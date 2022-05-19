@@ -61,6 +61,20 @@ func (h *HttpServe) setupRouter() {
 	h.Route("POST", "/tnc/explain/update/{id:[0-9]+}", h.offer.UpdateTncExplain)
 	h.Route("DELETE", "/tnc/explain/delete/{id:[0-9]+}", h.offer.DeleteTncExplain)
 
+	// Cost
+	h.Route("GET", "/cost/detail/{id:[0-9]+}", h.about.CostByID)
+	h.Route("GET", "/cost/list", h.about.CostList)
+	h.Route("POST", "/cost/create", h.about.CreateCost)
+	h.Route("POST", "/cost/update/{id:[0-9]+}", h.about.UpdateCost)
+	h.Route("DELETE", "/cost/delete/{id:[0-9]+}", h.about.DeleteCost)
+
+	// Cost Explain
+	h.Route("GET", "/cost/explain/detail/{id:[0-9]+}", h.about.CostExplainByID)
+	h.Route("GET", "/cost/explain/list", h.about.CostExplainList)
+	h.Route("POST", "/cost/explain/create", h.about.CreateCostExplain)
+	h.Route("POST", "/cost/explain/update/{id:[0-9]+}", h.about.UpdateCostExplain)
+	h.Route("DELETE", "/cost/explain/delete/{id:[0-9]+}", h.about.DeleteCostExplain)
+
 	// Landing Page
 	h.Route("GET", "/landingpage", h.offer.LandingPage)
 

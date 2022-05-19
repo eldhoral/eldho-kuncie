@@ -1,0 +1,3 @@
+INSERT INTO paylater.tbl_cost (loan_option,interest,admin_fee,fine_per_day,description,id_loan_option,created_date,updated_date) VALUES
+	 ('Tanpa cicilan','0%','1%*','Rp2.000','* Biaya admin 1% akan dikenakan dari limit yang terpakai dan jika ada pemakaian saja.',1,'2022-05-18 20:34:03','2022-05-18 20:34:03'),
+	 ('Dengan cicilan *','1-3%','0%','Rp2.000','* Pilihan tenor bisa bebas dipilih sesuai kebutuhanmu (3, 6, 9 dan 12 bulan).',2,'2022-05-18 20:34:03','2022-05-18 20:34:03');
