@@ -250,3 +250,24 @@ func (h HTTPHandler) DeleteCostExplain(ctx *app.Context) *server.Response {
 
 	return h.AsMobileJson(ctx, http.StatusOK, "Delete Cost Explain Successfully", err)
 }
+
+// CostExplainationPage for h.Route("GET", "/costexplanationpage", h.AboutService.CostExplainationPage)
+func (h HTTPHandler) CostExplainationPage(ctx *app.Context) *server.Response {
+	show := ctx.GetVarInt64("show")
+	if ctx.HasError() {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: show", nil)
+	}
+	if show != 0 && show != 1 {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Parameter show is must 0 or 1", nil)
+	}
+
+	params := data.NewParamsWrapper()
+	params.Add("show", show)
+
+	httpStatus, service, err := h.AboutService.GetCostExplanationPage(params)
+	if err != nil {
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, httpStatus, "Get Cost Explaination Page Successfully", service)
+}

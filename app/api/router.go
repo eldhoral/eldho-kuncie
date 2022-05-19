@@ -81,6 +81,9 @@ func (h *HttpServe) setupRouter() {
 	// Tnc Page
 	h.Route("GET", "/tncpage", h.offer.TncPage)
 
+	// Cost Explanation Page
+	h.Route("GET", "/costexplanationpage/{show:[0-1]+}", h.about.CostExplainationPage)
+
 	// Serve static image
 	h.static = h.router.PathPrefix("/assets/upload/image/").Handler(http.StripPrefix("/assets/upload/image/", http.FileServer(http.Dir("./assets/upload/image"))))
 
