@@ -85,7 +85,7 @@ func (h *HttpServe) setupRouter() {
 	h.Route("GET", "/costexplanationpage/{show:[0-1]+}", h.about.CostExplainationPage)
 
 	// Serve static image
-	h.static = h.router.PathPrefix("/assets/upload/image/").Handler(http.StripPrefix("/assets/upload/image/", http.FileServer(http.Dir("./assets/upload/image"))))
+	h.static = h.router.PathPrefix("/api/v1/assets/upload/image/").Handler(http.StripPrefix("/api/v1/assets/upload/image/", http.FileServer(http.Dir("./assets/upload/image"))))
 
 	// // Health Check
 	// h.router.HandleFunc("/health-check", h.base.HealthCheck).Methods(http.MethodGet)
