@@ -5,6 +5,7 @@ import (
 	"time"
 
 	modelCost "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/domain/cost"
+	modelFaq "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/domain/faq"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data"
 
 	"github.com/jmoiron/sqlx"
@@ -150,6 +151,147 @@ func (r repo) UpdateCostExplanationByID(id int64, params data.Params) (int64, er
 }
 func (r repo) DeleteCostExplanationByID(id int64) (httpStatus int, err error) {
 	query := `DELETE FROM tbl_cost_explain WHERE id = ?`
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		return http.StatusNotFound, err
+	}
+
+	return http.StatusOK, nil
+}
+
+//Faq
+func (r repo) GetFaqID(id int64) (*modelFaq.Faq, error) {
+	faq := &modelFaq.Faq{}
+	err := r.db.Get(faq, "SELECT * FROM tbl_faq WHERE id = ? ORDER BY id_order ASC", id)
+	return faq, err
+}
+func (r repo) GetFaqIDOrder(idOrder int64) (*modelFaq.Faq, error) {
+	faq := &modelFaq.Faq{}
+	err := r.db.Get(faq, "SELECT * FROM tbl_faq WHERE id_order = ? ORDER BY id_order ASC", idOrder)
+	return faq, err
+}
+func (r repo) ListFaq() ([]modelFaq.Faq, error) {
+	faq := []modelFaq.Faq{}
+	err := r.db.Select(&faq, "SELECT * FROM tbl_faq ORDER BY id_order ASC")
+	return faq, err
+}
+func (r repo) CreateFaq(f *modelFaq.Faq) (*modelFaq.Faq, error) {
+	arg := map[string]interface{}{
+		"title":    f.Title,
+		"id_order": f.IDOrder,
+	}
+
+	query := `INSERT INTO tbl_faq
+		SET title = :title, id_order = :id_order`
+
+	cost, err := r.db.NamedExec(query, arg)
+	if err != nil {
+		return nil, err
+	}
+
+	lastID, _ := cost.LastInsertId()
+
+	return &modelFaq.Faq{ID: lastID,
+		Title:       f.Title,
+		IDOrder:     f.IDOrder,
+		CreatedDate: time.Now(),
+		UpdatedDate: time.Now()}, nil
+}
+func (r repo) UpdateFaqByID(id int64, params data.Params) (int64, error) {
+	title := params.GetValue("title")
+	idOrder := params.GetValue("id_order")
+
+	query := `UPDATE tbl_faq SET title = ?, id_order = ?
+		WHERE id = ?`
+	result, err := r.db.Exec(query,
+		title, idOrder, id)
+	if err != nil {
+		return 0, err
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+func (r repo) DeleteFaqByID(id int64) (httpStatus int, err error) {
+	query := `DELETE FROM tbl_faq WHERE id = ?`
+	_, err = r.db.Exec(query, id)
+	if err != nil {
+		return http.StatusNotFound, err
+	}
+
+	return http.StatusOK, nil
+}
+
+//Faq Title
+func (r repo) GetFaqTitleID(id int64) (*modelFaq.FaqTitle, error) {
+	faq := &modelFaq.FaqTitle{}
+	err := r.db.Get(faq, "SELECT * FROM tbl_faq_title WHERE id = ? ORDER BY id_order ASC", id)
+	return faq, err
+}
+func (r repo) GetFaqTitleIDOrder(idOrder int64) (*modelFaq.FaqTitle, error) {
+	faq := &modelFaq.FaqTitle{}
+	err := r.db.Get(faq, "SELECT * FROM tbl_faq_title WHERE id_order = ? ORDER BY id_order ASC", idOrder)
+	return faq, err
+}
+func (r repo) ListFaqTitle() ([]modelFaq.FaqTitle, error) {
+	faq := []modelFaq.FaqTitle{}
+	err := r.db.Select(&faq, "SELECT * FROM tbl_faq_title ORDER BY id_order ASC")
+	return faq, err
+}
+func (r repo) ListFaqTitleByIDFaq(idFaq int64) ([]modelFaq.FaqTitle, error) {
+	faq := []modelFaq.FaqTitle{}
+	err := r.db.Select(&faq, "SELECT * FROM tbl_faq_title where id_faq = ?", idFaq)
+	return faq, err
+}
+func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) {
+	arg := map[string]interface{}{
+		"id_faq":      ft.IDFaq,
+		"title":       ft.Title,
+		"description": ft.Description,
+		"id_order":    ft.IDOrder,
+	}
+
+	query := `INSERT INTO tbl_faq_title
+		SET id_faq = :id_faq, title = :title, description = :description, id_order = :id_order`
+
+	cost, err := r.db.NamedExec(query, arg)
+	if err != nil {
+		return nil, err
+	}
+
+	lastID, _ := cost.LastInsertId()
+
+	return &modelFaq.FaqTitle{ID: lastID,
+		IDFaq:       ft.IDFaq,
+		Title:       ft.Title,
+		Description: ft.Description,
+		IDOrder:     ft.IDOrder,
+		CreatedDate: time.Now(),
+		UpdatedDate: time.Now()}, nil
+}
+func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
+	idFaq := params.GetValue("id_faq")
+	title := params.GetValue("title")
+	description := params.GetValue("description")
+	idOrder := params.GetValue("id_order")
+
+	query := `UPDATE tbl_faq_title SET id_faq = ?, title = ?, description = ?, id_order = ?
+		WHERE id = ?`
+	result, err := r.db.Exec(query,
+		idFaq, title, description, idOrder, id)
+	if err != nil {
+		return 0, err
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+func (r repo) DeleteFaqTitleByID(id int64) (httpStatus int, err error) {
+	query := `DELETE FROM tbl_faq_title WHERE id = ?`
 	_, err = r.db.Exec(query, id)
 	if err != nil {
 		return http.StatusNotFound, err

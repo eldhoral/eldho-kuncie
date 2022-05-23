@@ -55,8 +55,8 @@ INSERT INTO paylater.tbl_tnc_explain (description,id_tnc,created_date,updated_da
 	 ('Bank berhak secara seketika mengakhiri Perjanjian Kredit dan/atau menolak pencairan kredit selanjutnya serta menuntut pembayaran dengan seketika dan sekaligus lunas atas utang antara lain apabila Debitor tidak membayar angsuran pada waktunya.',2,'2022-05-12 15:49:15','2022-05-12 15:49:15',3,NULL),
 	 ('Biaya – biaya yang dikenakan ke Debitor:
 Biaya bunga 				: 17% flat p.a
-Biaya Provisi	/ Administrasi Fee	:  3% dari uang pinjaman dipotong didepan pada                                                                   saat pencairan
-Biaya Keterlambatan			:  0,07% per hari keterlambatan dihitung dari Sisa                                                                   Tunggakan (Pokok + Bunga)',2,'2022-05-12 15:49:15','2022-05-12 15:49:15',3,NULL),
+Biaya Provisi	/ Administrasi Fee	:  3% dari uang pinjaman dipotong didepan pada                                                                  saat pencairan
+Biaya Keterlambatan			:  0,07% per hari keterlambatan dihitung dari Sisa                                                                  Tunggakan (Pokok + Bunga)',2,'2022-05-12 15:49:15','2022-05-12 15:49:15',3,NULL),
 	 ('Setiap perubahan manfaat, biaya, risiko, syarat dan ketentuan dari layanan produk NOBU KTA, akan diberitahukan kepada Nasabah paling lambat 30 hari kerja sebelum berlakunya perubahan manfaat, biaya, risiko, syarat dan ketentuan',2,'2022-05-12 15:49:15','2022-05-12 15:49:15',3,NULL),
 	 ('Website e-form NOBU KTA sebagai share link yang digunakan sebagai sarana input data Calon Debitor yang ingin melakukan pengajuan pinjaman secara online yang disediakan oleh Bank yaitu:
 Formulir elektronik pengajuan pinjaman

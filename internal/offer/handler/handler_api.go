@@ -698,3 +698,13 @@ func (h HTTPHandler) TncPage(ctx *app.Context) *server.Response {
 
 	return h.AsMobileJson(ctx, httpStatus, "Get TNC Page Successfully", service)
 }
+
+// BenefitListPage for h.Route("GET", "/benefitpage", h.AboutService.BenefitListPage)
+func (h HTTPHandler) BenefitListPage(ctx *app.Context) *server.Response {
+	httpStatus, service, err := h.OfferService.ListBenefit()
+	if err != nil {
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, httpStatus, "Get List Benefit Page Successfully", service)
+}

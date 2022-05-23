@@ -75,6 +75,20 @@ func (h *HttpServe) setupRouter() {
 	h.Route("POST", "/cost/explain/update/{id:[0-9]+}", h.about.UpdateCostExplain)
 	h.Route("DELETE", "/cost/explain/delete/{id:[0-9]+}", h.about.DeleteCostExplain)
 
+	// FAQ
+	h.Route("GET", "/faq/detail/{id:[0-9]+}", h.about.FAQByID)
+	h.Route("GET", "/faq/list", h.about.FAQList)
+	h.Route("POST", "/faq/create", h.about.CreateFAQ)
+	h.Route("POST", "/faq/update/{id:[0-9]+}", h.about.UpdateFAQ)
+	h.Route("DELETE", "/faq/delete/{id:[0-9]+}", h.about.DeleteFAQ)
+
+	// FAQ Title
+	h.Route("GET", "/faq/title/detail/{id:[0-9]+}", h.about.FAQTitleByID)
+	h.Route("GET", "/faq/title/list", h.about.FAQTitleList)
+	h.Route("POST", "/faq/title/create", h.about.CreateFAQTitle)
+	h.Route("POST", "/faq/title/update/{id:[0-9]+}", h.about.UpdateFAQTitle)
+	h.Route("DELETE", "/faq/title/delete/{id:[0-9]+}", h.about.DeleteFAQTitle)
+
 	// Landing Page
 	h.Route("GET", "/landingpage", h.offer.LandingPage)
 
@@ -83,6 +97,12 @@ func (h *HttpServe) setupRouter() {
 
 	// Cost Explanation Page
 	h.Route("GET", "/costexplanationpage/{show:[0-1]+}", h.about.CostExplainationPage)
+
+	// Benefit List Page
+	h.Route("GET", "/benefitpage", h.offer.BenefitListPage)
+
+	// FAQ
+	h.Route("GET", "/faqpage", h.about.FAQPage)
 
 	// Serve static image
 	h.static = h.router.PathPrefix("/api/v1/assets/upload/image/").Handler(http.StripPrefix("/api/v1/assets/upload/image/", http.FileServer(http.Dir("./assets/upload/image"))))
