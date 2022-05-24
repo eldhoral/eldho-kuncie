@@ -22,6 +22,9 @@ COPY --from=builder /app/paylater-cms-api /app/paylater-cms-api
 RUN mkdir -p /app/logs \
     && chown -R $(id -u $(whoami)):0 /app/logs \
     && chmod -R g+w /app/logs
+RUN mkdir -p /app/assets/upload/image \
+    && chown -R $(id -u $(whoami)):0 /app/assets/upload/image \
+    && chmod -R g+w /app/assets/upload/image
 
 WORKDIR /app
 RUN mkdir params
