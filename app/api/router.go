@@ -110,9 +110,6 @@ func (h *HttpServe) setupRouter() {
 	// Serve static image localhost
 	h.static = h.router.PathPrefix("/api/v1/").Handler(http.StripPrefix("/api/v1/", http.FileServer(http.Dir("./assets/upload/image"))))
 
-	// Serve static image deployed
-	h.static = h.router.PathPrefix("/api/v1/").Handler(http.StripPrefix("/api/v1/", http.FileServer(http.Dir("./app/assets/upload/image"))))
-
 	// // Health Check
 	// h.router.HandleFunc("/health-check", h.base.HealthCheck).Methods(http.MethodGet)
 	// h.router.HandleFunc("/status-check", h.base.CheckStatus).Methods(http.MethodGet)
