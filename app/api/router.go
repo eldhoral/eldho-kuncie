@@ -95,6 +95,9 @@ func (h *HttpServe) setupRouter() {
 	// Tnc Page
 	h.Route("GET", "/tncpage", h.offer.TncPage)
 
+	// Tnc Mobile
+	h.Route("GET", "/tncpage/mobile", h.offer.TncPageMobile)
+
 	// Cost Explanation Page
 	h.Route("GET", "/costexplanationpage/{show:[0-1]+}", h.about.CostExplainationPage)
 

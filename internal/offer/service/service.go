@@ -548,3 +548,15 @@ func (s service) GetTncPage() (int, []*resp.TncPage, error) {
 	}
 	return http.StatusOK, responses, nil
 }
+
+func (s service) GetTncPageMobile() (int, *modelTnc.TncMobile, error) {
+	repo, err := s.offerRepo.GetTncMobile()
+	if err == sql.ErrNoRows {
+		return http.StatusNotFound, nil, errors.New("Tnc Mobile not found")
+	}
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, repo, nil
+}
