@@ -204,6 +204,11 @@ func (r repo) GetTncByID(id int64) (*modelTnc.Tnc, error) {
 	err := r.db.Get(tnc, "SELECT * FROM tbl_tnc WHERE id = ?", id)
 	return tnc, err
 }
+func (r repo) GetTncMobile() (*modelTnc.TncMobile, error) {
+	tnc := &modelTnc.TncMobile{}
+	err := r.db.Get(tnc, "SELECT * FROM tbl_tnc_mobile ORDER BY id LIMIT 1")
+	return tnc, err
+}
 func (r repo) ListTnc() ([]modelTnc.Tnc, error) {
 	tnc := []modelTnc.Tnc{}
 	err := r.db.Select(&tnc, "SELECT * FROM tbl_tnc")

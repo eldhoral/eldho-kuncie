@@ -30,6 +30,7 @@ type Repository interface {
 
 	//Tnc
 	GetTncByID(id int64) (*modelTnc.Tnc, error)
+	GetTncMobile() (*modelTnc.TncMobile, error)
 	ListTnc() ([]modelTnc.Tnc, error)
 	CreateTnc(t *modelTnc.Tnc) (*modelTnc.Tnc, error)
 	UpdateTncByID(id int64, params data.Params) (int64, error)

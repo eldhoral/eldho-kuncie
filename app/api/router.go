@@ -95,6 +95,9 @@ func (h *HttpServe) setupRouter() {
 	// Tnc Page
 	h.Route("GET", "/tncpage", h.offer.TncPage)
 
+	// Tnc Mobile
+	h.Route("GET", "/tncpage/mobile", h.offer.TncPageMobile)
+
 	// Cost Explanation Page
 	h.Route("GET", "/costexplanationpage/{show:[0-1]+}", h.about.CostExplainationPage)
 
@@ -104,7 +107,7 @@ func (h *HttpServe) setupRouter() {
 	// FAQ
 	h.Route("GET", "/faqpage", h.about.FAQPage)
 
-	// Serve static image
+	// Serve static image localhost
 	h.static = h.router.PathPrefix("/api/v1/").Handler(http.StripPrefix("/api/v1/", http.FileServer(http.Dir("./assets/upload/image"))))
 
 	// // Health Check
