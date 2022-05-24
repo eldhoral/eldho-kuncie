@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine AS builder
+FROM asia-southeast2-docker.pkg.dev/nobu-digital/base-image/golang:1.17-alpine AS builder
 ARG nobu_bitbucket_repo_access=$1
 ARG LIBRARY_DIR=https://${nobu_bitbucket_repo_access}@bitbucket.org/bitbucketnobubank/go-library.git
 
@@ -14,7 +14,7 @@ RUN go get -d -v
 RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o paylater-cms-api
 
 ###############################
-FROM golang:1.16-alpine
+FROM asia-southeast2-docker.pkg.dev/nobu-digital/base-image/golang:1.16-alpine
 
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /app/paylater-cms-api /app/paylater-cms-api
