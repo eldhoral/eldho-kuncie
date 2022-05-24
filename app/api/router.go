@@ -104,8 +104,11 @@ func (h *HttpServe) setupRouter() {
 	// FAQ
 	h.Route("GET", "/faqpage", h.about.FAQPage)
 
-	// Serve static image
+	// Serve static image localhost
 	h.static = h.router.PathPrefix("/api/v1/").Handler(http.StripPrefix("/api/v1/", http.FileServer(http.Dir("./assets/upload/image"))))
+
+	// Serve static image deployed
+	h.static = h.router.PathPrefix("/api/v1/").Handler(http.StripPrefix("/api/v1/", http.FileServer(http.Dir("./app/assets/upload/image"))))
 
 	// // Health Check
 	// h.router.HandleFunc("/health-check", h.base.HealthCheck).Methods(http.MethodGet)
