@@ -146,13 +146,15 @@ func NewUploadFileInstance(r *http.Request, name string) (*UploadFile, error) {
 		return nil, fmt.Errorf("File name is invalid. Please use valid character: %s", fileHeader.Filename)
 	}
 
+	uniqueSuffix := uuid.New()
+
 	re := regexp.MustCompile(`(^\.)|(^\/)`)
 	filename = re.ReplaceAllString(filename, "")
+	filename = uniqueSuffix.String() + "_" + fileHeader.Filename
 
 	s3name := fmt.Sprintf("%s_%s_%s",
 		time.Now().Format("20060102150405"), strings.ReplaceAll(uuid.New().String(), "-", ""), filename)
 
-	uniqueSuffix := uuid.New()
 	destinationFile := documentPath[OtherDocument] + uniqueSuffix.String() + "_" + fileHeader.Filename
 
 	//create file and copy

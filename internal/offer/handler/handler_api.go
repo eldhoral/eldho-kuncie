@@ -132,7 +132,7 @@ func (h HTTPHandler) CreateBenefit(ctx *app.Context) *server.Response {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Image must be filled", constant.EmptyArray)
 	}
 
-	httpStatus, service, err := h.OfferService.CreateBenefit(title, description, image.Path)
+	httpStatus, service, err := h.OfferService.CreateBenefit(title, description, image.Name)
 	if err != nil {
 		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}
@@ -164,7 +164,7 @@ func (h HTTPHandler) UpdateBenefit(ctx *app.Context) *server.Response {
 			return h.AsMobileJson(ctx, http.StatusInternalServerError, err.Error(), nil)
 		}
 
-		httpStatus, err := h.OfferService.UpdateBenefitByID(id, params, image.Path)
+		httpStatus, err := h.OfferService.UpdateBenefitByID(id, params, image.Name)
 		if err != nil {
 			return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 		}
