@@ -54,5 +54,4 @@ dbconfig.yml
 docker-compose.yml
 ./params/.env
 bin
-./assets/upload/image/**
 
