@@ -27,9 +27,9 @@ const (
 )
 
 var units = []string{"B", "KB", "MB", "GB", "TB"}
-var AllowedFile = []string{"pdf", "jpg", "png", "xlsx", "xls", "jpeg", "docx", "doc", "csv", "txt", "ppt", "pptx"}
-var ImageExt = []string{"jpg", "png", "jpeg"}
-var ImageType = []string{"image/png", "image/jpeg"}
+var AllowedFile = []string{"pdf", "jpg", "png", "xlsx", "xls", "jpeg", "docx", "doc", "csv", "txt", "ppt", "pptx", "svg"}
+var ImageExt = []string{"jpg", "png", "jpeg", "svg"}
+var ImageType = []string{"image/png", "image/jpeg", "image/svg"}
 var documentPath = map[int]string{
 	OtherDocument: "./assets/upload/image/",
 }
