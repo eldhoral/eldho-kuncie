@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"regexp"
 	"strconv"
 
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/app"
@@ -42,7 +43,12 @@ func (h HTTPHandler) CreateLoanLimit(ctx *app.Context) *server.Response {
 	if formBody != nil {
 		limit := formBody["limit"]
 		if limit == "" {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, "Limit must be filled", constant.EmptyArray)
+			return h.AsMobileJson(ctx, http.StatusBadRequest, "Limit must be filled", nil)
+		}
+		characters := regexp.MustCompile(`^[0-9]*$`)
+		match := characters.MatchString(limit)
+		if !match {
+			return h.AsMobileJson(ctx, http.StatusBadRequest, `Limit is invalid. Please dont use characters ^\.*/|/|\.\..*$`, nil)
 		}
 	}
 	httpStatus, service, err := h.OfferService.CreateLoanLimit(ctx.Request.FormValue("limit"))
@@ -58,6 +64,12 @@ func (h HTTPHandler) UpdateLoanLimit(ctx *app.Context) *server.Response {
 	limit := ctx.Request.FormValue("limit")
 	if limit == "" {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Limit must be filled", constant.EmptyArray)
+	}
+
+	characters := regexp.MustCompile(`^[0-9]*$`)
+	match := characters.MatchString(limit)
+	if !match {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, `Limit is invalid. Please dont use characters ^\.*/|/|\.\..*$`, nil)
 	}
 
 	httpStatus, err := h.OfferService.UpdateLoanLimit(limit)

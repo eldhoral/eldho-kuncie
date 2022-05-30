@@ -50,7 +50,7 @@ func (s service) GetLoanLimit() (int, *modelLanding.LoanLimit, error) {
 func (s service) CreateLoanLimit(limit string) (int, *modelLanding.LoanLimit, error) {
 	limitLoan, _ := strconv.Atoi(limit)
 	model := &modelLanding.LoanLimit{
-		Limit: float64(limitLoan),
+		Limit: int64(limitLoan),
 	}
 	repo, err := s.offerRepo.CreateLoanLimit(model)
 	if err != nil {

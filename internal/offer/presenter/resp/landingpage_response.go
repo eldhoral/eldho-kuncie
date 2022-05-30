@@ -7,8 +7,8 @@ type LandingPage struct {
 }
 
 type LoanLimit struct {
-	ID    int64   `json:"id"`
-	Limit float64 `json:"limit"`
+	ID    int64 `json:"id"`
+	Limit int64 `json:"limit"`
 }
 
 type Benefit struct {

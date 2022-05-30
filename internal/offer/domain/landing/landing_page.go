@@ -13,7 +13,7 @@ type Benefit struct {
 
 type LoanLimit struct {
 	ID          int64     `json:"id" db:"id"`
-	Limit       float64   `json:"loan_limit" db:"loan_limit"`
+	Limit       int64     `json:"loan_limit" db:"loan_limit"`
 	CreatedDate time.Time `json:"created_date" db:"created_date"`
 	UpdatedDate time.Time `json:"updated_date" db:"updated_date"`
 }
