@@ -28,7 +28,7 @@ func (r repo) GetCostByID(id int64) (*modelCost.Cost, error) {
 }
 func (r repo) ListCost() ([]modelCost.Cost, error) {
 	cost := []modelCost.Cost{}
-	err := r.db.Select(&cost, "SELECT * FROM tbl_cost")
+	err := r.db.Select(&cost, "SELECT * FROM tbl_cost WHERE is_visible = 1")
 	return cost, err
 }
 func (r repo) ListCostByIDLoanOption(idLoanOption int64) ([]modelCost.Cost, error) {
@@ -73,13 +73,14 @@ func (r repo) UpdateCostByID(id int64, params data.Params) (int64, error) {
 	adminFee := params.GetValue("admin_fee")
 	finePerDay := params.GetValue("fine_per_day")
 	description := params.GetValue("description")
+	isVisible := params.GetValue("is_visible")
 
 	query := `UPDATE tbl_cost SET loan_option = ?, interest = ?, admin_fee = ?,
-		fine_per_day = ?, description = ?
+		fine_per_day = ?, description = ?, is_visible = ?
 		WHERE id = ?`
 	result, err := r.db.Exec(query,
 		loanOption, interest, adminFee,
-		finePerDay, description, id)
+		finePerDay, description, isVisible, id)
 	if err != nil {
 		return 0, err
 	}
