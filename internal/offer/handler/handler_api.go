@@ -376,6 +376,27 @@ func (h HTTPHandler) UpdateTnc(ctx *app.Context) *server.Response {
 	return h.AsMobileJson(ctx, httpStatus, "Update Tnc Successfully", err)
 }
 
+// UpdateTnc for h.Route("POST", "/tnc/update/{id:[0-9]+}", h.OfferService.UpdateTnc)
+func (h HTTPHandler) UpdateTncMobile(ctx *app.Context) *server.Response {
+	formBody := ctx.GetFormBody()
+	if formBody == nil {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Body form is a must", constant.EmptyArray)
+	}
+
+	title := ctx.Request.FormValue("title")
+	description := ctx.Request.FormValue("description")
+	params := data.NewParamsWrapper()
+	params.Add("title", title)
+	params.Add("description", description)
+
+	httpStatus, err := h.OfferService.UpdateTncMobile(params)
+	if err != nil {
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, httpStatus, "Update Tnc Mobile Successfully", err)
+}
+
 // DeleteTnc for h.Route("POST", "/tnc/delete/{id:[0-9]+}", h.OfferService.DeleteTnc)
 func (h HTTPHandler) DeleteTnc(ctx *app.Context) *server.Response {
 	id := ctx.GetVarInt64("id")

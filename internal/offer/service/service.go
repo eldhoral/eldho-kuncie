@@ -242,6 +242,17 @@ func (s service) UpdateTncByID(id int64, params data.Params) (int, error) {
 
 	return http.StatusOK, nil
 }
+func (s service) UpdateTncMobile(params data.Params) (int, error) {
+	_, err := s.offerRepo.UpdateTncMobile(params)
+	if err == sql.ErrNoRows {
+		return http.StatusNotFound, errors.New("Tnc Row not found")
+	}
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
+}
 func (s service) DeleteTncByID(id int64) (int, error) {
 	status, err := s.offerRepo.DeleteTncByID(id)
 	if err == sql.ErrNoRows {

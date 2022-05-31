@@ -37,6 +37,7 @@ type Service interface {
 	ListTnc() (int, []modelTnc.Tnc, error)
 	CreateTnc(title string) (int, *modelTnc.Tnc, error)
 	UpdateTncByID(id int64, params data.Params) (int, error)
+	UpdateTncMobile(params data.Params) (int, error)
 	DeleteTncByID(id int64) (httpStatus int, err error)
 
 	//Tnc title
