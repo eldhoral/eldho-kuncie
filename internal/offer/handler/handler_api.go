@@ -376,7 +376,7 @@ func (h HTTPHandler) UpdateTnc(ctx *app.Context) *server.Response {
 	return h.AsMobileJson(ctx, httpStatus, "Update Tnc Successfully", err)
 }
 
-// UpdateTnc for h.Route("POST", "/tnc/update/{id:[0-9]+}", h.OfferService.UpdateTnc)
+// UpdateTncMobile for h.Route("POST", "/tnc/mobile/update", h.OfferService.UpdateTncMobile)
 func (h HTTPHandler) UpdateTncMobile(ctx *app.Context) *server.Response {
 	formBody := ctx.GetFormBody()
 	if formBody == nil {

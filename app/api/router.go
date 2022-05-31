@@ -38,6 +38,7 @@ func (h *HttpServe) setupRouter() {
 	h.Route("GET", "/tnc/list", h.offer.TncList)
 	h.Route("POST", "/tnc/create", h.offer.CreateTnc)
 	h.Route("POST", "/tnc/update/{id:[0-9]+}", h.offer.UpdateTnc)
+	h.Route("POST", "/tnc/mobile/update", h.offer.UpdateTncMobile)
 	h.Route("DELETE", "/tnc/delete/{id:[0-9]+}", h.offer.DeleteTnc)
 
 	// Tnc Title
