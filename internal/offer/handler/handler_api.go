@@ -9,6 +9,8 @@ import (
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/constant"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/server"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
 
 // LoanLimitDetail for h.Route("GET", "/loanlimit/detail", h.OfferService.GetLoanLimit)
@@ -42,13 +44,10 @@ func (h HTTPHandler) CreateLoanLimit(ctx *app.Context) *server.Response {
 
 	if formBody != nil {
 		limit := formBody["limit"]
-		if limit == "" {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, "Limit must be filled", nil)
-		}
-		characters := regexp.MustCompile(`^[0-9]*$`)
-		match := characters.MatchString(limit)
-		if !match {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, `Limit is invalid. Please dont use characters ^\.*/|/|\.\..*$`, nil)
+		err := validation.Validate(limit, validation.Required, validation.Length(0, 9),
+			is.Digit, validation.Match(regexp.MustCompile(`^[0-9]*$`)))
+		if err != nil {
+			return h.AsMobileJson(ctx, http.StatusBadRequest, err.Error(), nil)
 		}
 	}
 	httpStatus, service, err := h.OfferService.CreateLoanLimit(ctx.Request.FormValue("limit"))
@@ -62,14 +61,11 @@ func (h HTTPHandler) CreateLoanLimit(ctx *app.Context) *server.Response {
 // UpdateLoanLimit for h.Route("POST", "/loanlimit/update", h.OfferService.UpdateLoanLimit)
 func (h HTTPHandler) UpdateLoanLimit(ctx *app.Context) *server.Response {
 	limit := ctx.Request.FormValue("limit")
-	if limit == "" {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, "Limit must be filled", constant.EmptyArray)
-	}
 
-	characters := regexp.MustCompile(`^[0-9]*$`)
-	match := characters.MatchString(limit)
-	if !match {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, `Limit is invalid. Please dont use characters ^\.*/|/|\.\..*$`, nil)
+	err := validation.Validate(limit, validation.Required, validation.Length(0, 9),
+		is.Digit, validation.Match(regexp.MustCompile(`^[0-9]*$`)))
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, err.Error(), nil)
 	}
 
 	httpStatus, err := h.OfferService.UpdateLoanLimit(limit)
