@@ -10,6 +10,7 @@ type Cost struct {
 	AdminFee     string    `json:"admin_fee" db:"admin_fee"`
 	FinePerDay   string    `json:"fine_per_day" db:"fine_per_day"`
 	Description  string    `json:"description" db:"description"`
+	IsVisible    bool      `json:"is_visible" db:"is_visible"`
 	CreatedDate  time.Time `json:"created_date" db:"created_date"`
 	UpdatedDate  time.Time `json:"updated_date" db:"updated_date"`
 }

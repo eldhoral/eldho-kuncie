@@ -13,6 +13,7 @@ type Cost struct {
 	AdminFee     string `json:"admin_fee"`
 	FinePerDay   string `json:"fine_per_day"`
 	Description  string `json:"description"`
+	IsVisible    bool   `json:"is_visible"`
 }
 
 type CostExplain struct {

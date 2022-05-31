@@ -108,6 +108,7 @@ func (h HTTPHandler) UpdateCost(ctx *app.Context) *server.Response {
 	adminFee := ctx.Request.FormValue("admin_fee")
 	finePerDay := ctx.Request.FormValue("fine_per_day")
 	description := ctx.Request.FormValue("description")
+	isVisible := ctx.Request.FormValue("is_visible")
 
 	params := data.NewParamsWrapper()
 	params.Add("loan_option", loanOption)
@@ -115,6 +116,7 @@ func (h HTTPHandler) UpdateCost(ctx *app.Context) *server.Response {
 	params.Add("admin_fee", adminFee)
 	params.Add("fine_per_day", finePerDay)
 	params.Add("description", description)
+	params.Add("is_visible", isVisible)
 
 	if loanOption == "" &&
 		interest == "" &&
@@ -478,39 +480,7 @@ func (h HTTPHandler) DeleteFAQTitle(ctx *app.Context) *server.Response {
 //Page
 // CostExplainationPage for h.Route("GET", "/costexplanationpage", h.AboutService.CostExplainationPage)
 func (h HTTPHandler) CostExplainationPage(ctx *app.Context) *server.Response {
-	show := ctx.GetVarInt64("show")
-	if ctx.HasError() {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: show", nil)
-	}
-	if show != 0 && show != 1 {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, "Parameter show is must 0 or 1", nil)
-	}
-
-	params := data.NewParamsWrapper()
-	params.Add("show", show)
-
-	httpStatus, service, err := h.AboutService.GetCostExplanationPage(params)
-	if err != nil {
-		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
-	}
-
-	return h.AsMobileJson(ctx, httpStatus, "Get Cost Explaination Page Successfully", service)
-}
-
-// BenefitListPage for h.Route("GET", "/benefitpage", h.AboutService.BenefitListPage)
-func (h HTTPHandler) BenefitListPage(ctx *app.Context) *server.Response {
-	show := ctx.GetVarInt64("show")
-	if ctx.HasError() {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: show", nil)
-	}
-	if show != 0 && show != 1 {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, "Parameter show is must 0 or 1", nil)
-	}
-
-	params := data.NewParamsWrapper()
-	params.Add("show", show)
-
-	httpStatus, service, err := h.AboutService.GetCostExplanationPage(params)
+	httpStatus, service, err := h.AboutService.GetCostExplanationPage()
 	if err != nil {
 		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
 	}

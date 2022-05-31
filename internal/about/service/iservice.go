@@ -40,7 +40,7 @@ type Service interface {
 
 	//Page
 	//About Paylater - Penjelasan Biaya
-	GetCostExplanationPage(params data.Params) (int, *resp.CostExplanationPage, error)
+	GetCostExplanationPage() (int, *resp.CostExplanationPage, error)
 
 	//About FAQ
 	GetFaqPage() (int, *resp.FAQPage, error)
