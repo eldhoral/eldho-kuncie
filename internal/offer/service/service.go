@@ -50,7 +50,7 @@ func (s service) GetLoanLimit() (int, *modelLanding.LoanLimit, error) {
 func (s service) CreateLoanLimit(limit string) (int, *modelLanding.LoanLimit, error) {
 	limitLoan, _ := strconv.Atoi(limit)
 	model := &modelLanding.LoanLimit{
-		Limit: float64(limitLoan),
+		Limit: int64(limitLoan),
 	}
 	repo, err := s.offerRepo.CreateLoanLimit(model)
 	if err != nil {
@@ -235,6 +235,17 @@ func (s service) UpdateTncByID(id int64, params data.Params) (int, error) {
 	_, err := s.offerRepo.UpdateTncByID(id, params)
 	if err == sql.ErrNoRows {
 		return http.StatusNotFound, errors.New("Tnc ID not found")
+	}
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
+}
+func (s service) UpdateTncMobile(params data.Params) (int, error) {
+	_, err := s.offerRepo.UpdateTncMobile(params)
+	if err == sql.ErrNoRows {
+		return http.StatusNotFound, errors.New("Tnc Row not found")
 	}
 	if err != nil {
 		return http.StatusInternalServerError, err

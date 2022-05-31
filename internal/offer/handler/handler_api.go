@@ -2,12 +2,15 @@ package handler
 
 import (
 	"net/http"
+	"regexp"
 	"strconv"
 
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/app"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/constant"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/server"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
 
 // LoanLimitDetail for h.Route("GET", "/loanlimit/detail", h.OfferService.GetLoanLimit)
@@ -41,8 +44,10 @@ func (h HTTPHandler) CreateLoanLimit(ctx *app.Context) *server.Response {
 
 	if formBody != nil {
 		limit := formBody["limit"]
-		if limit == "" {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, "Limit must be filled", constant.EmptyArray)
+		err := validation.Validate(limit, validation.Required, validation.Length(0, 9),
+			is.Digit, validation.Match(regexp.MustCompile(`^[0-9]*$`)))
+		if err != nil {
+			return h.AsMobileJson(ctx, http.StatusBadRequest, err.Error(), nil)
 		}
 	}
 	httpStatus, service, err := h.OfferService.CreateLoanLimit(ctx.Request.FormValue("limit"))
@@ -56,8 +61,11 @@ func (h HTTPHandler) CreateLoanLimit(ctx *app.Context) *server.Response {
 // UpdateLoanLimit for h.Route("POST", "/loanlimit/update", h.OfferService.UpdateLoanLimit)
 func (h HTTPHandler) UpdateLoanLimit(ctx *app.Context) *server.Response {
 	limit := ctx.Request.FormValue("limit")
-	if limit == "" {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, "Limit must be filled", constant.EmptyArray)
+
+	err := validation.Validate(limit, validation.Required, validation.Length(0, 9),
+		is.Digit, validation.Match(regexp.MustCompile(`^[0-9]*$`)))
+	if err != nil {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, err.Error(), nil)
 	}
 
 	httpStatus, err := h.OfferService.UpdateLoanLimit(limit)
@@ -366,6 +374,27 @@ func (h HTTPHandler) UpdateTnc(ctx *app.Context) *server.Response {
 	}
 
 	return h.AsMobileJson(ctx, httpStatus, "Update Tnc Successfully", err)
+}
+
+// UpdateTncMobile for h.Route("POST", "/tnc/mobile/update", h.OfferService.UpdateTncMobile)
+func (h HTTPHandler) UpdateTncMobile(ctx *app.Context) *server.Response {
+	formBody := ctx.GetFormBody()
+	if formBody == nil {
+		return h.AsMobileJson(ctx, http.StatusBadRequest, "Body form is a must", constant.EmptyArray)
+	}
+
+	title := ctx.Request.FormValue("title")
+	description := ctx.Request.FormValue("description")
+	params := data.NewParamsWrapper()
+	params.Add("title", title)
+	params.Add("description", description)
+
+	httpStatus, err := h.OfferService.UpdateTncMobile(params)
+	if err != nil {
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, httpStatus, "Update Tnc Mobile Successfully", err)
 }
 
 // DeleteTnc for h.Route("POST", "/tnc/delete/{id:[0-9]+}", h.OfferService.DeleteTnc)

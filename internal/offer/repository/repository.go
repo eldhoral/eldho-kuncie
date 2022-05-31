@@ -245,6 +245,20 @@ func (r repo) UpdateTncByID(id int64, params data.Params) (int64, error) {
 	}
 	return count, nil
 }
+func (r repo) UpdateTncMobile(params data.Params) (int64, error) {
+	title := params.GetValue("title")
+	description := params.GetValue("description")
+	query := `UPDATE tbl_tnc SET title = ?, description = ? ORDER BY id LIMIT 1`
+	result, err := r.db.Exec(query, title, description)
+	if err != nil {
+		return 0, err
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
 func (r repo) DeleteTncByID(id int64) (httpStatus int, err error) {
 	query := `DELETE FROM tbl_tnc WHERE id = ?`
 	_, err = r.db.Exec(query, id)

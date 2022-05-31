@@ -34,6 +34,7 @@ type Repository interface {
 	ListTnc() ([]modelTnc.Tnc, error)
 	CreateTnc(t *modelTnc.Tnc) (*modelTnc.Tnc, error)
 	UpdateTncByID(id int64, params data.Params) (int64, error)
+	UpdateTncMobile(params data.Params) (int64, error)
 	DeleteTncByID(id int64) (httpStatus int, err error)
 
 	//Tnc title
