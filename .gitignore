@@ -48,3 +48,11 @@ Thumbs.db
 *.mov
 *.wmv
 
+.env
+.vscode
+dbconfig.yml
+docker-compose.yml
+./params/.env
+bin
+./assets/upload/image/**
+

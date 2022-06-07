@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS `tbl_faq` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `id_order` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+

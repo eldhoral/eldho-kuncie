@@ -1,0 +1,1 @@
+DROP TABLE tbl_loan_limit;
