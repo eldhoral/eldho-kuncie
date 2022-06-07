@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	modelCost "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/domain/cost"
@@ -199,28 +201,30 @@ func (r repo) CreateFaq(f *modelFaq.Faq) (*modelFaq.Faq, error) {
 		UpdatedDate: time.Now()}, nil
 }
 func (r repo) UpdateFaqByID(id int64, params data.Params) (int64, error) {
-	title := params.GetValue("title")
-	idOrder := params.GetValue("id_order")
+	arg := map[string]interface{}{
+		"id_order": params.GetString("id_order"),
+		"title":    params.GetString("title"),
+		"id":       id,
+	}
+	var columns []string
 
-	if idOrder == nil {
-		query := `UPDATE tbl_faq SET title = ?
-		WHERE id = ?`
-		result, err := r.db.Exec(query,
-			title, id)
-		if err != nil {
-			return 0, err
+	column := []string{"id_order", "title"}
+	for row, dataColumn := range column {
+		value := params.GetString(dataColumn)
+		totalRow := len(column)
+		if value != "" {
+			if row+1 == totalRow {
+				columns = append(columns, dataColumn+" = :"+dataColumn+" ")
+			} else {
+				columns = append(columns, dataColumn+" = :"+dataColumn+", ")
+			}
 		}
-		count, err := result.RowsAffected()
-		if err != nil {
-			return 0, err
-		}
-		return count, nil
 	}
 
-	query := `UPDATE tbl_faq SET title = ?, id_order = ?
-		WHERE id = ?`
-	result, err := r.db.Exec(query,
-		title, idOrder, id)
+	query := "UPDATE tbl_faq SET " + strings.Join(columns, "") +
+		"WHERE id = :id"
+	fmt.Println(query)
+	result, err := r.db.NamedExec(query, arg)
 	if err != nil {
 		return 0, err
 	}
@@ -288,30 +292,34 @@ func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) 
 		UpdatedDate: time.Now()}, nil
 }
 func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
-	idFaq := params.GetValue("id_faq")
-	title := params.GetValue("title")
-	description := params.GetValue("description")
-	idOrder := params.GetValue("id_order")
+	arg := map[string]interface{}{
+		"title":       params.GetString("title"),
+		"id_order":    params.GetString("id_order"),
+		"id_faq":      params.GetString("id_faq"),
+		"description": params.GetString("description"),
+		"id":          id,
+	}
+	var columns []string
 
-	if idOrder == nil {
-		query := `UPDATE tbl_faq_title SET id_faq = ?, title = ?, description = ?
-		WHERE id = ?`
-		result, err := r.db.Exec(query,
-			idFaq, title, description, id)
-		if err != nil {
-			return 0, err
+	column := []string{"title", "id_order", "id_faq", "description"}
+	for row, dataColumn := range column {
+		value := params.GetString(dataColumn)
+		totalRow := len(column)
+		if value != "" {
+			fmt.Println(row)
+			fmt.Println(totalRow)
+			if row+1 == totalRow {
+				columns = append(columns, dataColumn+" = :"+dataColumn+" ")
+			} else {
+				columns = append(columns, dataColumn+" = :"+dataColumn+", ")
+			}
 		}
-		count, err := result.RowsAffected()
-		if err != nil {
-			return 0, err
-		}
-		return count, nil
 	}
 
-	query := `UPDATE tbl_faq_title SET id_faq = ?, title = ?, description = ?, id_order = ?
-		WHERE id = ?`
-	result, err := r.db.Exec(query,
-		idFaq, title, description, idOrder, id)
+	query := "UPDATE tbl_faq_title SET " + strings.Join(columns, "") +
+		"WHERE id = :id"
+	fmt.Println(query)
+	result, err := r.db.NamedExec(query, arg)
 	if err != nil {
 		return 0, err
 	}
