@@ -248,7 +248,7 @@ func (r repo) UpdateTncByID(id int64, params data.Params) (int64, error) {
 func (r repo) UpdateTncMobile(params data.Params) (int64, error) {
 	title := params.GetValue("title")
 	description := params.GetValue("description")
-	query := `UPDATE tbl_tnc SET title = ?, description = ? ORDER BY id LIMIT 1`
+	query := `UPDATE tbl_tnc_mobile SET title = ?, description = ? ORDER BY id LIMIT 1`
 	result, err := r.db.Exec(query, title, description)
 	if err != nil {
 		return 0, err

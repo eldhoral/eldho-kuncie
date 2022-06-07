@@ -7,6 +7,7 @@ import (
 	modelCost "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/domain/cost"
 	modelFaq "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/domain/faq"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data"
+	generator "bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/query"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -199,13 +200,17 @@ func (r repo) CreateFaq(f *modelFaq.Faq) (*modelFaq.Faq, error) {
 		UpdatedDate: time.Now()}, nil
 }
 func (r repo) UpdateFaqByID(id int64, params data.Params) (int64, error) {
-	title := params.GetValue("title")
-	idOrder := params.GetValue("id_order")
+	arg := map[string]interface{}{
+		"id_order": params.GetString("id_order"),
+		"title":    params.GetString("title"),
+		"id":       id,
+	}
+	column := []string{"id_order", "title"}
+	columns := generator.DynamicUpdateStatement(column, params)
 
-	query := `UPDATE tbl_faq SET title = ?, id_order = ?
-		WHERE id = ?`
-	result, err := r.db.Exec(query,
-		title, idOrder, id)
+	query := "UPDATE tbl_faq SET " + columns +
+		"WHERE id = :id"
+	result, err := r.db.NamedExec(query, arg)
 	if err != nil {
 		return 0, err
 	}
@@ -273,15 +278,19 @@ func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) 
 		UpdatedDate: time.Now()}, nil
 }
 func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
-	idFaq := params.GetValue("id_faq")
-	title := params.GetValue("title")
-	description := params.GetValue("description")
-	idOrder := params.GetValue("id_order")
+	arg := map[string]interface{}{
+		"title":       params.GetString("title"),
+		"id_order":    params.GetString("id_order"),
+		"id_faq":      params.GetString("id_faq"),
+		"description": params.GetString("description"),
+		"id":          id,
+	}
+	column := []string{"title", "id_order", "id_faq", "description"}
+	columns := generator.DynamicUpdateStatement(column, params)
 
-	query := `UPDATE tbl_faq_title SET id_faq = ?, title = ?, description = ?, id_order = ?
-		WHERE id = ?`
-	result, err := r.db.Exec(query,
-		idFaq, title, description, idOrder, id)
+	query := "UPDATE tbl_faq_title SET " + columns +
+		"WHERE id = :id"
+	result, err := r.db.NamedExec(query, arg)
 	if err != nil {
 		return 0, err
 	}
