@@ -1,0 +1,7 @@
+INSERT INTO paylater.tbl_cost_explain (title,description,created_date,updated_date) VALUES
+	 ('Tidak ada tagihan jika tidak digunakan','Tagihan hanya akan muncul jika kamu menggunakan limit Nobu PayLater, jika tidak digunakan maka tidak akan muncul tagihan','2022-05-18 20:34:12','2022-05-18 20:34:12'),
+	 ('Bunga mulai dari 0%','Bayar tagihan Nobu PayLater tepat waktu di akhir bulan biar gak kena Bunga.','2022-05-18 20:34:12','2022-05-18 20:34:12'),
+	 ('Biaya administrasi','Kamu akan mendapatkan gratis biaya administrasi untuk tagihan bulan pertama, setelahnya akan ada biaya administrasi sebesar 1% dari total pinjaman.','2022-05-18 20:34:12','2022-05-18 20:34:12'),
+	 ('Masa tenggang tagihan','Kami akan memberikan 10 hari masa tenggang sejak tanggal tagihan untuk membayar tagihan Nobu PayLater.','2022-05-18 20:34:12','2022-05-18 20:34:12'),
+	 ('Bayar tagihan kapanpun','Kamu bisa membayar pinjaman baik sebelum tagihan diterima maupun setelah tagihan diterima. Jika sampai hari terakhir jatuh tempo masih ada tagihan yang belum dibayar maka kami akan melakukan autodebet dari rekening tabungan kamu untuk menghindari dikenakan denda keterlambatan.','2022-05-18 20:34:12','2022-05-18 20:34:12'),
+	 ('Denda keterlambatan','Kamu akan dikenakan denda keterlambatan jika tidak membayar tagihan hingga terakhir tanggal jatuh tempo sebesar Rp2.000 per-hari. Denda keterlambatan kamu tidak akan melebihi total pinjaman kamu.','2022-05-18 20:34:12','2022-05-18 20:34:12');
