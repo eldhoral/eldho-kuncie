@@ -1,6 +1,8 @@
 package slicehelper
 
-import "reflect"
+import (
+	"reflect"
+)
 
 //UniqueSlices Remove duplicate elements on slice of string
 func UniqueSlices(arr []string) []string {

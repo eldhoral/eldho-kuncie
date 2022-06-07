@@ -1,14 +1,13 @@
 package repository
 
 import (
-	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
 	modelCost "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/domain/cost"
 	modelFaq "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/domain/faq"
 	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data"
+	generator "bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/query"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -206,24 +205,11 @@ func (r repo) UpdateFaqByID(id int64, params data.Params) (int64, error) {
 		"title":    params.GetString("title"),
 		"id":       id,
 	}
-	var columns []string
-
 	column := []string{"id_order", "title"}
-	for row, dataColumn := range column {
-		value := params.GetString(dataColumn)
-		totalRow := len(column)
-		if value != "" {
-			if row+1 == totalRow {
-				columns = append(columns, dataColumn+" = :"+dataColumn+" ")
-			} else {
-				columns = append(columns, dataColumn+" = :"+dataColumn+", ")
-			}
-		}
-	}
+	columns := generator.DynamicUpdateStatement(column, params)
 
-	query := "UPDATE tbl_faq SET " + strings.Join(columns, "") +
+	query := "UPDATE tbl_faq SET " + columns +
 		"WHERE id = :id"
-	fmt.Println(query)
 	result, err := r.db.NamedExec(query, arg)
 	if err != nil {
 		return 0, err
@@ -299,26 +285,11 @@ func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
 		"description": params.GetString("description"),
 		"id":          id,
 	}
-	var columns []string
-
 	column := []string{"title", "id_order", "id_faq", "description"}
-	for row, dataColumn := range column {
-		value := params.GetString(dataColumn)
-		totalRow := len(column)
-		if value != "" {
-			fmt.Println(row)
-			fmt.Println(totalRow)
-			if row+1 == totalRow {
-				columns = append(columns, dataColumn+" = :"+dataColumn+" ")
-			} else {
-				columns = append(columns, dataColumn+" = :"+dataColumn+", ")
-			}
-		}
-	}
+	columns := generator.DynamicUpdateStatement(column, params)
 
-	query := "UPDATE tbl_faq_title SET " + strings.Join(columns, "") +
+	query := "UPDATE tbl_faq_title SET " + columns +
 		"WHERE id = :id"
-	fmt.Println(query)
 	result, err := r.db.NamedExec(query, arg)
 	if err != nil {
 		return 0, err
