@@ -202,6 +202,21 @@ func (r repo) UpdateFaqByID(id int64, params data.Params) (int64, error) {
 	title := params.GetValue("title")
 	idOrder := params.GetValue("id_order")
 
+	if idOrder == nil {
+		query := `UPDATE tbl_faq SET title = ?
+		WHERE id = ?`
+		result, err := r.db.Exec(query,
+			title, id)
+		if err != nil {
+			return 0, err
+		}
+		count, err := result.RowsAffected()
+		if err != nil {
+			return 0, err
+		}
+		return count, nil
+	}
+
 	query := `UPDATE tbl_faq SET title = ?, id_order = ?
 		WHERE id = ?`
 	result, err := r.db.Exec(query,
@@ -277,6 +292,21 @@ func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
 	title := params.GetValue("title")
 	description := params.GetValue("description")
 	idOrder := params.GetValue("id_order")
+
+	if idOrder == nil {
+		query := `UPDATE tbl_faq_title SET id_faq = ?, title = ?, description = ?
+		WHERE id = ?`
+		result, err := r.db.Exec(query,
+			idFaq, title, description, id)
+		if err != nil {
+			return 0, err
+		}
+		count, err := result.RowsAffected()
+		if err != nil {
+			return 0, err
+		}
+		return count, nil
+	}
 
 	query := `UPDATE tbl_faq_title SET id_faq = ?, title = ?, description = ?, id_order = ?
 		WHERE id = ?`

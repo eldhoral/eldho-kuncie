@@ -192,12 +192,17 @@ func (s service) CreateFaq(params data.Params) (int, *modelFaq.Faq, error) {
 }
 func (s service) UpdateFaqByID(id int64, params data.Params) (int, error) {
 	idOrder := params.GetInt64("id_order")
-	checkIDOrderIfExist, err := s.aboutRepo.GetFaqIDOrder(idOrder)
-	if checkIDOrderIfExist.IDOrder == idOrder {
-		return http.StatusFound, errors.New("ID Order is found, please change id_order or delete the first one")
+	if idOrder != 0 {
+		checkIDOrderIfExist, err := s.aboutRepo.GetFaqIDOrder(idOrder)
+		if checkIDOrderIfExist.IDOrder == idOrder {
+			return http.StatusFound, errors.New("ID Order is found, please change id_order or delete the first one")
+		}
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
 	}
 
-	_, err = s.aboutRepo.UpdateFaqByID(id, params)
+	_, err := s.aboutRepo.UpdateFaqByID(id, params)
 	if err == sql.ErrNoRows {
 		return http.StatusNotFound, errors.New("ID FAQ not found")
 	}
@@ -278,9 +283,14 @@ func (s service) CreateFaqTitle(params data.Params) (int, *modelFaq.FaqTitle, er
 }
 func (s service) UpdateFaqTitleByID(id int64, params data.Params) (int, error) {
 	idOrder := params.GetInt64("id_order")
-	checkIDOrderIfExist, _ := s.aboutRepo.GetFaqTitleIDOrder(idOrder)
-	if checkIDOrderIfExist.IDOrder == idOrder {
-		return http.StatusFound, errors.New("ID Order is found, please change id_order or delete the first one")
+	if idOrder != 0 {
+		checkIDOrderIfExist, err := s.aboutRepo.GetFaqTitleIDOrder(idOrder)
+		if checkIDOrderIfExist.IDOrder == idOrder {
+			return http.StatusFound, errors.New("ID Order is found, please change id_order or delete the first one")
+		}
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
 	}
 
 	_, err := s.aboutRepo.UpdateFaqTitleByID(id, params)
