@@ -246,12 +246,28 @@ func (r repo) ListFaqTitle() ([]modelFaq.FaqTitle, error) {
 	err := r.db.Select(&faq, "SELECT * FROM tbl_faq_title ORDER BY id_order ASC")
 	return faq, err
 }
+func (r repo) ListIDOrder(idOrder int64) ([]modelFaq.FaqTitle, error) {
+	faq := []modelFaq.FaqTitle{}
+	err := r.db.Select(&faq, "SELECT id, id_order FROM tbl_faq_title WHERE id_order >= ? ORDER BY id_order ASC", idOrder)
+	return faq, err
+}
 func (r repo) ListFaqTitleByIDFaq(idFaq int64) ([]modelFaq.FaqTitle, error) {
 	faq := []modelFaq.FaqTitle{}
 	err := r.db.Select(&faq, "SELECT * FROM tbl_faq_title where id_faq = ?", idFaq)
 	return faq, err
 }
 func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) {
+	// update the ordering number of id order
+	idOrderList, err := r.ListIDOrder(ft.IDOrder)
+	for _, dataOrder := range idOrderList {
+		idOrder := dataOrder.IDOrder + 1
+		id := dataOrder.ID
+		query := "UPDATE tbl_faq_title SET id_order = ? where id = ?"
+		_, err := r.db.Exec(query, idOrder, id)
+		if err != nil {
+			return nil, err
+		}
+	}
 	arg := map[string]interface{}{
 		"id_faq":      ft.IDFaq,
 		"title":       ft.Title,
@@ -301,6 +317,18 @@ func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
 	return count, nil
 }
 func (r repo) DeleteFaqTitleByID(id int64) (httpStatus int, err error) {
+	getIdOrder, err := r.GetFaqTitleID(id)
+	// update the ordering number of id order
+	idOrderList, err := r.ListIDOrder(getIdOrder.IDOrder)
+	for _, dataOrder := range idOrderList {
+		idOrder := dataOrder.IDOrder - 1
+		id := dataOrder.ID
+		query := "UPDATE tbl_faq_title SET id_order = ? where id = ?"
+		_, err := r.db.Exec(query, idOrder, id)
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
+	}
 	query := `DELETE FROM tbl_faq_title WHERE id = ?`
 	_, err = r.db.Exec(query, id)
 	if err != nil {

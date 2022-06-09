@@ -26,6 +26,7 @@ type Repository interface {
 	GetFaqID(id int64) (*modelFaq.Faq, error)
 	GetFaqIDOrder(idOrder int64) (*modelFaq.Faq, error)
 	ListFaq() ([]modelFaq.Faq, error)
+	ListIDOrder(idOrder int64) ([]modelFaq.FaqTitle, error)
 	CreateFaq(ce *modelFaq.Faq) (*modelFaq.Faq, error)
 	UpdateFaqByID(id int64, params data.Params) (int64, error)
 	DeleteFaqByID(id int64) (httpStatus int, err error)
