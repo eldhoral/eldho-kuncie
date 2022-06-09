@@ -305,12 +305,11 @@ func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) 
 func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
 	arg := map[string]interface{}{
 		"title":       params.GetString("title"),
-		"id_order":    params.GetString("id_order"),
 		"id_faq":      params.GetString("id_faq"),
 		"description": params.GetString("description"),
 		"id":          id,
 	}
-	column := []string{"title", "id_order", "id_faq", "description"}
+	column := []string{"title", "id_faq", "description"}
 	columns := generator.DynamicUpdateStatement(column, params)
 
 	query := "UPDATE tbl_faq_title SET " + columns +
