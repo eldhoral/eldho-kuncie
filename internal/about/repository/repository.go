@@ -246,10 +246,29 @@ func (r repo) ListFaqTitle() ([]modelFaq.FaqTitle, error) {
 	err := r.db.Select(&faq, "SELECT * FROM tbl_faq_title ORDER BY id_order ASC")
 	return faq, err
 }
-func (r repo) ListIDOrder(idOrder int64) ([]modelFaq.FaqTitle, error) {
-	faq := []modelFaq.FaqTitle{}
-	err := r.db.Select(&faq, "SELECT id, id_order FROM tbl_faq_title WHERE id_order >= ? ORDER BY id_order ASC", idOrder)
-	return faq, err
+func (r repo) AutoIncrementIDOrder(idOrder int64) (int64, error) {
+	query := "UPDATE tbl_faq_title SET id_order = id_order + 1 WHERE id_order >= ? ORDER BY id_order ASC"
+	result, err := r.db.Exec(query, idOrder)
+	if err != nil {
+		return 0, err
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+func (r repo) AutoDecrementIDOrder(idOrder int64) (int64, error) {
+	query := "UPDATE tbl_faq_title SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
+	result, err := r.db.Exec(query, idOrder)
+	if err != nil {
+		return 0, err
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }
 func (r repo) ListFaqTitleByIDFaq(idFaq int64) ([]modelFaq.FaqTitle, error) {
 	faq := []modelFaq.FaqTitle{}
@@ -258,26 +277,16 @@ func (r repo) ListFaqTitleByIDFaq(idFaq int64) ([]modelFaq.FaqTitle, error) {
 }
 func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) {
 	// update the ordering number of id order
-	idOrderList, err := r.ListIDOrder(ft.IDOrder)
-	for _, dataOrder := range idOrderList {
-		idOrder := dataOrder.IDOrder + 1
-		id := dataOrder.ID
-		query := "UPDATE tbl_faq_title SET id_order = ? where id = ?"
-		_, err := r.db.Exec(query, idOrder, id)
-		if err != nil {
-			return nil, err
-		}
-	}
+	_, err := r.AutoIncrementIDOrder(ft.IDOrder)
+
 	arg := map[string]interface{}{
 		"id_faq":      ft.IDFaq,
 		"title":       ft.Title,
 		"description": ft.Description,
 		"id_order":    ft.IDOrder,
 	}
-
 	query := `INSERT INTO tbl_faq_title
 		SET id_faq = :id_faq, title = :title, description = :description, id_order = :id_order`
-
 	cost, err := r.db.NamedExec(query, arg)
 	if err != nil {
 		return nil, err
@@ -319,16 +328,8 @@ func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
 func (r repo) DeleteFaqTitleByID(id int64) (httpStatus int, err error) {
 	getIdOrder, err := r.GetFaqTitleID(id)
 	// update the ordering number of id order
-	idOrderList, err := r.ListIDOrder(getIdOrder.IDOrder)
-	for _, dataOrder := range idOrderList {
-		idOrder := dataOrder.IDOrder - 1
-		id := dataOrder.ID
-		query := "UPDATE tbl_faq_title SET id_order = ? where id = ?"
-		_, err := r.db.Exec(query, idOrder, id)
-		if err != nil {
-			return http.StatusInternalServerError, err
-		}
-	}
+	_, err = r.AutoDecrementIDOrder(getIdOrder.IDOrder)
+
 	query := `DELETE FROM tbl_faq_title WHERE id = ?`
 	_, err = r.db.Exec(query, id)
 	if err != nil {
