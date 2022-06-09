@@ -268,12 +268,6 @@ func (s service) CreateFaqTitle(params data.Params) (int, *modelFaq.FaqTitle, er
 		Description: description,
 		IDOrder:     idOrder,
 	}
-
-	checkIDOrderIfExist, _ := s.aboutRepo.GetFaqTitleIDOrder(idOrder)
-	if checkIDOrderIfExist.IDOrder == idOrder {
-		return http.StatusFound, nil, errors.New("ID Order is found, please change id_order or delete the first one")
-	}
-
 	repo, err := s.aboutRepo.CreateFaqTitle(model)
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
