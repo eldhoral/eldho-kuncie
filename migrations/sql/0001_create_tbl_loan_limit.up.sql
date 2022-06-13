@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `tbl_loan_limit` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `loan_limit` float NOT NULL DEFAULT '0',
+  `loan_limit` int NOT NULL DEFAULT '0',
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
