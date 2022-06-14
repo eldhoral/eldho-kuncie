@@ -268,12 +268,6 @@ func (s service) CreateFaqTitle(params data.Params) (int, *modelFaq.FaqTitle, er
 		Description: description,
 		IDOrder:     idOrder,
 	}
-
-	checkIDOrderIfExist, _ := s.aboutRepo.GetFaqTitleIDOrder(idOrder)
-	if checkIDOrderIfExist.IDOrder == idOrder {
-		return http.StatusFound, nil, errors.New("ID Order is found, please change id_order or delete the first one")
-	}
-
 	repo, err := s.aboutRepo.CreateFaqTitle(model)
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
@@ -282,17 +276,6 @@ func (s service) CreateFaqTitle(params data.Params) (int, *modelFaq.FaqTitle, er
 	return http.StatusCreated, repo, nil
 }
 func (s service) UpdateFaqTitleByID(id int64, params data.Params) (int, error) {
-	idOrder := params.GetInt64("id_order")
-	if idOrder != 0 {
-		checkIDOrderIfExist, err := s.aboutRepo.GetFaqTitleIDOrder(idOrder)
-		if checkIDOrderIfExist.IDOrder == idOrder {
-			return http.StatusFound, errors.New("ID Order is found, please change id_order or delete the first one")
-		}
-		if err != nil {
-			return http.StatusInternalServerError, err
-		}
-	}
-
 	_, err := s.aboutRepo.UpdateFaqTitleByID(id, params)
 	if err == sql.ErrNoRows {
 		return http.StatusNotFound, errors.New("ID FAQ title not found")
