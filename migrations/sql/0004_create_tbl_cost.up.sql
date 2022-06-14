@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `tbl_cost` (
   `fine_per_day` varchar(10) NOT NULL,
   `description` varchar(100) NOT NULL,
   `id_loan_option` int NOT NULL,
+  `is_visible` int NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
