@@ -272,7 +272,7 @@ func (r repo) AutoDecrementIDOrder(idOrder int64) (int64, error) {
 }
 func (r repo) ListFaqTitleByIDFaq(idFaq int64) ([]modelFaq.FaqTitle, error) {
 	faq := []modelFaq.FaqTitle{}
-	err := r.db.Select(&faq, "SELECT * FROM tbl_faq_title where id_faq = ?", idFaq)
+	err := r.db.Select(&faq, "SELECT * FROM tbl_faq_title where id_faq = ? ORDER BY id_order ASC", idFaq)
 	return faq, err
 }
 func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) {
