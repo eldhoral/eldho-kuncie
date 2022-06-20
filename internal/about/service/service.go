@@ -46,28 +46,6 @@ func (s service) ListCost() (int, []modelCost.Cost, error) {
 
 	return http.StatusOK, repo, nil
 }
-func (s service) CreateCost(params data.Params) (int, *modelCost.Cost, error) {
-	loanOption := params.GetString("loan_option")
-	idLoanOption := params.GetInt("id_loan_option")
-	interest := params.GetString("interest")
-	adminFee := params.GetString("admin_fee")
-	finePerDay := params.GetString("fine_per_day")
-	description := params.GetString("description")
-	model := &modelCost.Cost{
-		LoanOption:   loanOption,
-		IDLoanOption: idLoanOption,
-		Interest:     interest,
-		AdminFee:     adminFee,
-		FinePerDay:   finePerDay,
-		Description:  description,
-	}
-	repo, err := s.aboutRepo.CreateCost(model)
-	if err != nil {
-		return http.StatusInternalServerError, nil, err
-	}
-
-	return http.StatusCreated, repo, nil
-}
 func (s service) UpdateCostByID(id int64, params data.Params) (int, error) {
 	_, err := s.aboutRepo.UpdateCostByID(id, params)
 	if err == sql.ErrNoRows {
@@ -77,16 +55,6 @@ func (s service) UpdateCostByID(id int64, params data.Params) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 
-	return http.StatusOK, nil
-}
-func (s service) DeleteCostByID(id int64) (httpStatus int, err error) {
-	status, err := s.aboutRepo.DeleteCostByID(id)
-	if err == sql.ErrNoRows {
-		return status, errors.New("Cost ID not found")
-	}
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
 	return http.StatusOK, nil
 }
 

@@ -34,63 +34,6 @@ func (h HTTPHandler) CostList(ctx *app.Context) *server.Response {
 	return h.AsMobileJson(ctx, httpStatus, "Get Cost List Successfully", service)
 }
 
-// CreateCost for h.Route("POST", "/cost/create", h.AboutService.CreateCost)
-func (h HTTPHandler) CreateCost(ctx *app.Context) *server.Response {
-	formBody := ctx.GetFormBody()
-	if formBody != nil {
-		loanOption := formBody["loan_option"]
-		if loanOption == "" {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, "Loan Option must be filled", constant.EmptyArray)
-		}
-		idLoanOption := formBody["id_loan_option"]
-		if idLoanOption == "" {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, "ID Loan Option must be filled", constant.EmptyArray)
-		}
-		interest := formBody["interest"]
-		if interest == "" {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, "Interest must be filled", constant.EmptyArray)
-		}
-		adminFee := formBody["admin_fee"]
-		if adminFee == "" {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, "Admin Fee must be filled", constant.EmptyArray)
-		}
-		finePerDay := formBody["fine_per_day"]
-		if finePerDay == "" {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, "Fine per Day must be filled", constant.EmptyArray)
-		}
-		description := formBody["description"]
-		if description == "" {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, "Description must be filled", constant.EmptyArray)
-		}
-	}
-
-	if formBody == nil {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, "Body form is a must", constant.EmptyArray)
-	}
-
-	loanOption := ctx.Request.FormValue("loan_option")
-	idLoanOption := ctx.Request.FormValue("id_loan_option")
-	interest := ctx.Request.FormValue("interest")
-	adminFee := ctx.Request.FormValue("admin_fee")
-	finePerDay := ctx.Request.FormValue("fine_per_day")
-	description := ctx.Request.FormValue("description")
-
-	params := data.NewParamsWrapper()
-	params.Add("loan_option", loanOption)
-	params.Add("id_loan_option", idLoanOption)
-	params.Add("interest", interest)
-	params.Add("admin_fee", adminFee)
-	params.Add("fine_per_day", finePerDay)
-	params.Add("description", description)
-
-	httpStatus, service, err := h.AboutService.CreateCost(params)
-	if err != nil {
-		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
-	}
-
-	return h.AsMobileJson(ctx, httpStatus, "Create Cost Successfully", service)
-}
-
 // UpdateCost for h.Route("POST", "/cost/update/{id:[0-9]+}", h.AboutService.UpdateCost)
 func (h HTTPHandler) UpdateCost(ctx *app.Context) *server.Response {
 	id := ctx.GetVarInt64("id")
@@ -132,21 +75,6 @@ func (h HTTPHandler) UpdateCost(ctx *app.Context) *server.Response {
 	}
 
 	return h.AsMobileJson(ctx, httpStatus, "Update Cost Successfully", err)
-}
-
-// DeleteCost for h.Route("POST", "/cost/delete/{id:[0-9]+}", h.AboutService.DeleteCost)
-func (h HTTPHandler) DeleteCost(ctx *app.Context) *server.Response {
-	id := ctx.GetVarInt64("id")
-	if ctx.HasError() {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
-	}
-
-	status, err := h.AboutService.DeleteCostByID(id)
-	if err != nil {
-		return h.AsMobileJson(ctx, status, err.Error(), nil)
-	}
-
-	return h.AsMobileJson(ctx, http.StatusOK, "Delete Cost Successfully", err)
 }
 
 // CostExplainByID for h.Route("GET", "/cost/explain/detail/{id:[0-9]+}", h.AboutService.CostExplainByID)

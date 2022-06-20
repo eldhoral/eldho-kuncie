@@ -11,9 +11,7 @@ type Repository interface {
 	GetCostByID(id int64) (*modelCost.Cost, error)
 	ListCost() ([]modelCost.Cost, error)
 	ListCostByIDLoanOption(idLoanOption int64) ([]modelCost.Cost, error)
-	CreateCost(c *modelCost.Cost) (*modelCost.Cost, error)
 	UpdateCostByID(id int64, params data.Params) (int64, error)
-	DeleteCostByID(id int64) (httpStatus int, err error)
 
 	// Cost Explanation
 	GetCostExplanationByID(id int64) (*modelCost.CostExplanation, error)

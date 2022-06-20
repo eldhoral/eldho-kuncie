@@ -8,11 +8,8 @@ import (
 
 type Repository interface {
 	//Loan limit
-	GetLoanLimitByID(id int64) (*modelLanding.LoanLimit, error)
 	GetLoanLimit() (*modelLanding.LoanLimit, error)
-	CreateLoanLimit(ll *modelLanding.LoanLimit) (*modelLanding.LoanLimit, error)
 	UpdateLoanLimit(limit string) (int64, error)
-	DeleteLoanLimit() (httpStatus int, err error)
 
 	//Benefit
 	GetBenefitByID(id int64) (*modelLanding.Benefit, error)

@@ -22,41 +22,6 @@ func (h HTTPHandler) LoanLimitDetail(ctx *app.Context) *server.Response {
 	return h.AsMobileJson(ctx, httpStatus, "Get Loan Limit Successfully", service)
 }
 
-// LoanLimitDetailByID for h.Route("GET", "/loanlimit/detail/{id:[0-9]+}", h.OfferService.GetLoanLimit)
-func (h HTTPHandler) LoanLimitDetailByID(ctx *app.Context) *server.Response {
-	id := ctx.GetVarInt64("id")
-	if ctx.HasError() {
-		return h.AsMobileJson(ctx, http.StatusBadRequest, "Missing required parameters: id", nil)
-	}
-
-	httpStatus, service, err := h.OfferService.GetLoanLimitByID(id)
-	if err != nil {
-		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
-	}
-
-	return h.AsMobileJson(ctx, httpStatus, "Get Loan Limit Successfully", service)
-}
-
-// CreateLoanLimit for h.Route("POST", "/loanlimit/create", h.OfferService.CreateLoanLimit)
-func (h HTTPHandler) CreateLoanLimit(ctx *app.Context) *server.Response {
-	formBody := ctx.GetFormBody()
-
-	if formBody != nil {
-		limit := formBody["limit"]
-		err := validation.Validate(limit, validation.Required, validation.Length(0, 9),
-			is.Digit, validation.Match(regexp.MustCompile(`^[0-9]*$`)))
-		if err != nil {
-			return h.AsMobileJson(ctx, http.StatusBadRequest, err.Error(), nil)
-		}
-	}
-	httpStatus, service, err := h.OfferService.CreateLoanLimit(ctx.Request.FormValue("limit"))
-	if err != nil {
-		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
-	}
-
-	return h.AsMobileJson(ctx, httpStatus, "Create Loan Limit Successfully", service)
-}
-
 // UpdateLoanLimit for h.Route("POST", "/loanlimit/update", h.OfferService.UpdateLoanLimit)
 func (h HTTPHandler) UpdateLoanLimit(ctx *app.Context) *server.Response {
 	limit := ctx.Request.FormValue("limit")
@@ -73,16 +38,6 @@ func (h HTTPHandler) UpdateLoanLimit(ctx *app.Context) *server.Response {
 	}
 
 	return h.AsMobileJson(ctx, httpStatus, "Create Loan Limit Successfully", err)
-}
-
-// DeleteLoanLimit for h.Route("POST", "/loanlimit/delete", h.OfferService.DeleteLoanLimit)
-func (h HTTPHandler) DeleteLoanLimit(ctx *app.Context) *server.Response {
-	status, err := h.OfferService.DeleteLoanLimit()
-	if err != nil {
-		return h.AsMobileJson(ctx, status, err.Error(), nil)
-	}
-
-	return h.AsMobileJson(ctx, http.StatusOK, "Delete Loan Limit Successfully", err)
 }
 
 // BenefitByID for h.Route("GET", "/benefit/detail/{id:[0-9]+}", h.OfferService.BenefitByID)

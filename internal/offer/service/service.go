@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"strconv"
 
 	modelLanding "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/domain/landing"
 	modelTnc "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/domain/tnc"
@@ -25,17 +24,6 @@ type service struct {
 }
 
 //Loan limit
-func (s service) GetLoanLimitByID(id int64) (int, *modelLanding.LoanLimit, error) {
-	repo, err := s.offerRepo.GetLoanLimitByID(id)
-	if err == sql.ErrNoRows {
-		return http.StatusNotFound, nil, errors.New("Loan limit not found")
-	}
-	if err != nil {
-		return http.StatusInternalServerError, nil, err
-	}
-
-	return http.StatusOK, repo, nil
-}
 func (s service) GetLoanLimit() (int, *modelLanding.LoanLimit, error) {
 	repo, err := s.offerRepo.GetLoanLimit()
 	if err == sql.ErrNoRows {
@@ -47,33 +35,10 @@ func (s service) GetLoanLimit() (int, *modelLanding.LoanLimit, error) {
 
 	return http.StatusOK, repo, nil
 }
-func (s service) CreateLoanLimit(limit string) (int, *modelLanding.LoanLimit, error) {
-	limitLoan, _ := strconv.Atoi(limit)
-	model := &modelLanding.LoanLimit{
-		Limit: int64(limitLoan),
-	}
-	repo, err := s.offerRepo.CreateLoanLimit(model)
-	if err != nil {
-		return http.StatusInternalServerError, nil, err
-	}
-
-	return http.StatusCreated, repo, nil
-}
 func (s service) UpdateLoanLimit(limit string) (int, error) {
 	_, err := s.offerRepo.UpdateLoanLimit(limit)
 	if err == sql.ErrNoRows {
 		return http.StatusNotFound, errors.New("Loan limit ID not found")
-	}
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	return http.StatusOK, nil
-}
-func (s service) DeleteLoanLimit() (int, error) {
-	status, err := s.offerRepo.DeleteLoanLimit()
-	if err == sql.ErrNoRows {
-		return status, errors.New("Loan limit not found")
 	}
 	if err != nil {
 		return http.StatusInternalServerError, err
