@@ -14,10 +14,7 @@ func (h *HttpServe) setupRouter() {
 
 	// Loan Limit
 	h.Route("GET", "/loanlimit/detail", h.offer.LoanLimitDetail)
-	h.Route("GET", "/loanlimit/detail/{id:[0-9]+}", h.offer.LoanLimitDetailByID)
-	h.Route("POST", "/loanlimit/create", h.offer.CreateLoanLimit)
 	h.Route("POST", "/loanlimit/update/{id:[0-9]+}", h.offer.UpdateLoanLimit)
-	h.Route("DELETE", "/loanlimit/delete", h.offer.DeleteLoanLimit)
 
 	// Benefit
 	h.Route("GET", "/benefit/detail/{id:[0-9]+}", h.offer.BenefitByID)
@@ -39,9 +36,7 @@ func (h *HttpServe) setupRouter() {
 	// Cost
 	h.Route("GET", "/cost/detail/{id:[0-9]+}", h.about.CostByID)
 	h.Route("GET", "/cost/list", h.about.CostList)
-	h.Route("POST", "/cost/create", h.about.CreateCost)
 	h.Route("POST", "/cost/update/{id:[0-9]+}", h.about.UpdateCost)
-	h.Route("DELETE", "/cost/delete/{id:[0-9]+}", h.about.DeleteCost)
 
 	// Cost Explain
 	h.Route("GET", "/cost/explain/detail/{id:[0-9]+}", h.about.CostExplainByID)

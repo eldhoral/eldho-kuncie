@@ -37,37 +37,6 @@ func (r repo) ListCostByIDLoanOption(idLoanOption int64) ([]modelCost.Cost, erro
 	err := r.db.Select(&cost, "SELECT * FROM tbl_cost where id_loan_option = ?", idLoanOption)
 	return cost, err
 }
-func (r repo) CreateCost(c *modelCost.Cost) (*modelCost.Cost, error) {
-	arg := map[string]interface{}{
-		"loan_option":    c.LoanOption,
-		"id_loan_option": c.IDLoanOption,
-		"interest":       c.Interest,
-		"admin_fee":      c.AdminFee,
-		"fine_per_day":   c.FinePerDay,
-		"description":    c.Description,
-	}
-
-	query := `INSERT INTO tbl_cost
-		SET loan_option = :loan_option, id_loan_option = :id_loan_option, interest = :interest,
-		admin_fee = :admin_fee, fine_per_day = :fine_per_day, description = :description`
-
-	cost, err := r.db.NamedExec(query, arg)
-	if err != nil {
-		return nil, err
-	}
-
-	lastID, _ := cost.LastInsertId()
-
-	return &modelCost.Cost{ID: lastID,
-		LoanOption:   c.LoanOption,
-		IDLoanOption: c.IDLoanOption,
-		Interest:     c.Interest,
-		AdminFee:     c.AdminFee,
-		FinePerDay:   c.FinePerDay,
-		Description:  c.Description,
-		CreatedDate:  time.Now(),
-		UpdatedDate:  time.Now()}, nil
-}
 func (r repo) UpdateCostByID(id int64, params data.Params) (int64, error) {
 	loanOption := params.GetValue("loan_option")
 	interest := params.GetValue("interest")
@@ -90,15 +59,6 @@ func (r repo) UpdateCostByID(id int64, params data.Params) (int64, error) {
 		return 0, err
 	}
 	return count, nil
-}
-func (r repo) DeleteCostByID(id int64) (httpStatus int, err error) {
-	query := `DELETE FROM tbl_cost WHERE id = ?`
-	_, err = r.db.Exec(query, id)
-	if err != nil {
-		return http.StatusNotFound, err
-	}
-
-	return http.StatusOK, nil
 }
 
 //Cost Explain

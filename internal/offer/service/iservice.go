@@ -11,11 +11,8 @@ import (
 type Service interface {
 	//CMS
 	//Loan limit
-	GetLoanLimitByID(id int64) (int, *modelLanding.LoanLimit, error)
 	GetLoanLimit() (int, *modelLanding.LoanLimit, error)
-	CreateLoanLimit(limit string) (int, *modelLanding.LoanLimit, error)
 	UpdateLoanLimit(limit string) (int, error)
-	DeleteLoanLimit() (httpStatus int, err error)
 
 	//Benefit
 	GetBenefitByID(id int64) (int, *modelLanding.Benefit, error)

@@ -21,33 +21,10 @@ type repo struct {
 }
 
 //Loan limit
-func (r repo) GetLoanLimitByID(id int64) (*modelLanding.LoanLimit, error) {
-	loanLimit := &modelLanding.LoanLimit{}
-	err := r.db.Get(loanLimit, "SELECT * FROM tbl_loan_limit WHERE id = ?", id)
-	return loanLimit, err
-}
 func (r repo) GetLoanLimit() (*modelLanding.LoanLimit, error) {
 	loanLimit := &modelLanding.LoanLimit{}
 	err := r.db.Get(loanLimit, "SELECT * FROM tbl_loan_limit ORDER BY id ASC LIMIT 1")
 	return loanLimit, err
-}
-func (r repo) CreateLoanLimit(ll *modelLanding.LoanLimit) (*modelLanding.LoanLimit, error) {
-	arg := map[string]interface{}{
-		"limit": ll.Limit,
-	}
-
-	query := `INSERT INTO tbl_loan_limit
-		SET loan_limit = :limit`
-
-	loanLimit, err := r.db.NamedExec(query, arg)
-	if err != nil {
-		return nil, err
-	}
-
-	lastID, _ := loanLimit.LastInsertId()
-
-	return &modelLanding.LoanLimit{ID: lastID,
-		Limit: ll.Limit}, nil
 }
 func (r repo) UpdateLoanLimit(limit string) (int64, error) {
 	limitLoan, _ := strconv.Atoi(limit)
@@ -62,15 +39,6 @@ func (r repo) UpdateLoanLimit(limit string) (int64, error) {
 		return 0, err
 	}
 	return count, nil
-}
-func (r repo) DeleteLoanLimit() (httpStatus int, err error) {
-	query := `DELETE FROM tbl_loan_limit ORDER BY id ASC LIMIT 1`
-	_, err = r.db.Exec(query)
-	if err != nil {
-		return http.StatusNotFound, err
-	}
-
-	return http.StatusOK, nil
 }
 
 //Benefit

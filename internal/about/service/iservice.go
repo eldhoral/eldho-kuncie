@@ -12,9 +12,7 @@ type Service interface {
 	//Cost
 	GetCostByID(id int64) (int, *modelCost.Cost, error)
 	ListCost() (int, []modelCost.Cost, error)
-	CreateCost(params data.Params) (int, *modelCost.Cost, error)
 	UpdateCostByID(id int64, params data.Params) (int, error)
-	DeleteCostByID(id int64) (httpStatus int, err error)
 
 	//Cost Explain
 	GetCostExplainByID(id int64) (int, *modelCost.CostExplanation, error)
