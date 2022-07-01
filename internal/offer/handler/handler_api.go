@@ -296,6 +296,17 @@ func (h HTTPHandler) TncPageMobile(ctx *app.Context) *server.Response {
 	return h.AsMobileJson(ctx, httpStatus, "Get TNC Page Mobile Successfully", service)
 }
 
+// TncPageMobile for h.Route("GET", "/tncpage/mobile/{id:[0-9]+}", h.OfferService.TncPageMobile)
+func (h HTTPHandler) TncPageMobileByID(ctx *app.Context) *server.Response {
+	id := ctx.GetVarInt64("id")
+	httpStatus, service, err := h.OfferService.GetTncPageMobileByID(id)
+	if err != nil {
+		return h.AsMobileJson(ctx, httpStatus, err.Error(), nil)
+	}
+
+	return h.AsMobileJson(ctx, httpStatus, "Get TNC Page Mobile Successfully", service)
+}
+
 // BenefitListPage for h.Route("GET", "/benefitpage", h.AboutService.BenefitListPage)
 func (h HTTPHandler) BenefitListPage(ctx *app.Context) *server.Response {
 	httpStatus, service, err := h.OfferService.ListBenefit()

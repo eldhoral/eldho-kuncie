@@ -27,5 +27,6 @@ type Repository interface {
 
 	//Tnc
 	GetTncMobile() (*modelTnc.TncMobile, error)
+	GetTncMobileByID(id int64) (*modelTnc.TncMobile, error)
 	UpdateTncMobile(params data.Params) (int64, error)
 }

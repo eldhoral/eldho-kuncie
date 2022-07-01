@@ -172,6 +172,11 @@ func (r repo) GetTncMobile() (*modelTnc.TncMobile, error) {
 	err := r.db.Get(tnc, "SELECT * FROM tbl_tnc_mobile ORDER BY id LIMIT 1")
 	return tnc, err
 }
+func (r repo) GetTncMobileByID(id int64) (*modelTnc.TncMobile, error) {
+	tnc := &modelTnc.TncMobile{}
+	err := r.db.Get(tnc, "SELECT * FROM tbl_tnc_mobile WHERE id = ?", id)
+	return tnc, err
+}
 func (r repo) UpdateTncMobile(params data.Params) (int64, error) {
 	description := params.GetValue("description")
 	query := `UPDATE tbl_tnc_mobile SET description = ? ORDER BY id LIMIT 1`

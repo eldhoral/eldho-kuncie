@@ -32,6 +32,7 @@ func (h *HttpServe) setupRouter() {
 
 	// Tnc
 	h.Route("POST", "/tnc/mobile/update", h.offer.UpdateTncMobile)
+	h.Route("GET", "/tnc/mobile/{id:[0-9]+}", h.offer.TncPageMobileByID)
 
 	// Cost
 	h.Route("GET", "/cost/detail/{id:[0-9]+}", h.about.CostByID)

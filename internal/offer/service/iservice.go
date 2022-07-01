@@ -30,6 +30,7 @@ type Service interface {
 
 	//Tnc
 	GetTncPageMobile() (int, *modelTnc.TncMobile, error)
+	GetTncPageMobileByID(id int64) (int, *modelTnc.TncMobile, error)
 	UpdateTncMobile(params data.Params) (int, error)
 
 	//Page

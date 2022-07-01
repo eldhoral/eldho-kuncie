@@ -174,6 +174,28 @@ func (s service) UpdateTncMobile(params data.Params) (int, error) {
 
 	return http.StatusOK, nil
 }
+func (s service) GetTncPageMobile() (int, *modelTnc.TncMobile, error) {
+	repo, err := s.offerRepo.GetTncMobile()
+	if err == sql.ErrNoRows {
+		return http.StatusNotFound, nil, errors.New("Tnc Mobile not found")
+	}
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, repo, nil
+}
+func (s service) GetTncPageMobileByID(id int64) (int, *modelTnc.TncMobile, error) {
+	repo, err := s.offerRepo.GetTncMobileByID(id)
+	if err == sql.ErrNoRows {
+		return http.StatusNotFound, nil, errors.New("Tnc Mobile ID not found")
+	}
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, repo, nil
+}
 
 //Paylater Offer Page - Landing Page
 func (s service) GetLandingPage() (int, *resp.LandingPage, error) {
@@ -218,16 +240,4 @@ func (s service) GetLandingPage() (int, *resp.LandingPage, error) {
 	}
 
 	return http.StatusOK, &respLandingPage, nil
-}
-
-func (s service) GetTncPageMobile() (int, *modelTnc.TncMobile, error) {
-	repo, err := s.offerRepo.GetTncMobile()
-	if err == sql.ErrNoRows {
-		return http.StatusNotFound, nil, errors.New("Tnc Mobile not found")
-	}
-	if err != nil {
-		return http.StatusInternalServerError, nil, err
-	}
-
-	return http.StatusOK, repo, nil
 }
