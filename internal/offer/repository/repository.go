@@ -174,7 +174,7 @@ func (r repo) GetTncMobile() (*modelTnc.TncMobile, error) {
 }
 func (r repo) GetTncMobileByID(id int64) (*modelTnc.TncMobile, error) {
 	tnc := &modelTnc.TncMobile{}
-	err := r.db.Get(tnc, "SELECT * FROM tbl_tnc_mobile WHERE id = ?", id)
+	err := r.db.Get(tnc, "SELECT id, description, created_date, updated_date FROM tbl_tnc_mobile WHERE id = ?", id)
 	return tnc, err
 }
 func (r repo) UpdateTncMobile(params data.Params) (int64, error) {
