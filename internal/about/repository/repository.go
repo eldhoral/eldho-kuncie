@@ -24,17 +24,21 @@ type repo struct {
 //Cost
 func (r repo) GetCostByID(id int64) (*modelCost.Cost, error) {
 	cost := &modelCost.Cost{}
-	err := r.db.Get(cost, "SELECT * FROM tbl_cost WHERE id = ?", id)
+	err := r.db.Get(cost, `SELECT id, loan_option, id_loan_option, interest, 
+	admin_fee, fine_per_day, description, is_visible FROM tbl_cost WHERE id = ?`, id)
 	return cost, err
 }
 func (r repo) ListCost() ([]modelCost.Cost, error) {
 	cost := []modelCost.Cost{}
-	err := r.db.Select(&cost, "SELECT * FROM tbl_cost WHERE is_visible = 1")
+	isVisible := 1
+	err := r.db.Select(&cost, `SELECT id, loan_option, id_loan_option, interest, 
+	admin_fee, fine_per_day, description, is_visible FROM tbl_cost WHERE is_visible = ?`, isVisible)
 	return cost, err
 }
 func (r repo) ListCostByIDLoanOption(idLoanOption int64) ([]modelCost.Cost, error) {
 	cost := []modelCost.Cost{}
-	err := r.db.Select(&cost, "SELECT * FROM tbl_cost where id_loan_option = ?", idLoanOption)
+	err := r.db.Select(&cost, `SELECT id, loan_option, id_loan_option, interest, 
+	admin_fee, fine_per_day, description, is_visible FROM tbl_cost where id_loan_option = ?`, idLoanOption)
 	return cost, err
 }
 func (r repo) UpdateCostByID(id int64, params data.Params) (int64, error) {
@@ -64,12 +68,12 @@ func (r repo) UpdateCostByID(id int64, params data.Params) (int64, error) {
 //Cost Explain
 func (r repo) GetCostExplanationByID(id int64) (*modelCost.CostExplanation, error) {
 	cost := &modelCost.CostExplanation{}
-	err := r.db.Get(cost, "SELECT * FROM tbl_cost_explain WHERE id = ?", id)
+	err := r.db.Get(cost, "SELECT id, title, description FROM tbl_cost_explain WHERE id = ?", id)
 	return cost, err
 }
 func (r repo) ListCostExplanation() ([]modelCost.CostExplanation, error) {
 	cost := []modelCost.CostExplanation{}
-	err := r.db.Select(&cost, "SELECT * FROM tbl_cost_explain")
+	err := r.db.Select(&cost, "SELECT id, title, description FROM tbl_cost_explain")
 	return cost, err
 }
 func (r repo) CreateCostExplanation(ce *modelCost.CostExplanation) (*modelCost.CostExplanation, error) {
@@ -124,17 +128,17 @@ func (r repo) DeleteCostExplanationByID(id int64) (httpStatus int, err error) {
 //Faq
 func (r repo) GetFaqID(id int64) (*modelFaq.Faq, error) {
 	faq := &modelFaq.Faq{}
-	err := r.db.Get(faq, "SELECT * FROM tbl_faq WHERE id = ? ORDER BY id_order ASC", id)
+	err := r.db.Get(faq, "SELECT id, id_order, title FROM tbl_faq WHERE id = ? ORDER BY id_order ASC", id)
 	return faq, err
 }
 func (r repo) GetFaqIDOrder(idOrder int64) (*modelFaq.Faq, error) {
 	faq := &modelFaq.Faq{}
-	err := r.db.Get(faq, "SELECT * FROM tbl_faq WHERE id_order = ? ORDER BY id_order ASC", idOrder)
+	err := r.db.Get(faq, "SELECT id, id_order, title FROM tbl_faq WHERE id_order = ? ORDER BY id_order ASC", idOrder)
 	return faq, err
 }
 func (r repo) ListFaq() ([]modelFaq.Faq, error) {
 	faq := []modelFaq.Faq{}
-	err := r.db.Select(&faq, "SELECT * FROM tbl_faq ORDER BY id_order ASC")
+	err := r.db.Select(&faq, "SELECT id, id_order, title FROM tbl_faq ORDER BY id_order ASC")
 	return faq, err
 }
 func (r repo) CreateFaq(f *modelFaq.Faq) (*modelFaq.Faq, error) {
@@ -193,17 +197,17 @@ func (r repo) DeleteFaqByID(id int64) (httpStatus int, err error) {
 //Faq Title
 func (r repo) GetFaqTitleID(id int64) (*modelFaq.FaqTitle, error) {
 	faq := &modelFaq.FaqTitle{}
-	err := r.db.Get(faq, "SELECT * FROM tbl_faq_title WHERE id = ? ORDER BY id_order ASC", id)
+	err := r.db.Get(faq, "SELECT id, id_order, id_faq, title, description FROM tbl_faq_title WHERE id = ? ORDER BY id_order ASC", id)
 	return faq, err
 }
 func (r repo) GetFaqTitleIDOrder(idOrder int64) (*modelFaq.FaqTitle, error) {
 	faq := &modelFaq.FaqTitle{}
-	err := r.db.Get(faq, "SELECT * FROM tbl_faq_title WHERE id_order = ? ORDER BY id_order ASC", idOrder)
+	err := r.db.Get(faq, "SELECT id, id_order, id_faq, title, description FROM tbl_faq_title WHERE id_order = ? ORDER BY id_order ASC", idOrder)
 	return faq, err
 }
 func (r repo) ListFaqTitle() ([]modelFaq.FaqTitle, error) {
 	faq := []modelFaq.FaqTitle{}
-	err := r.db.Select(&faq, "SELECT * FROM tbl_faq_title ORDER BY id_order ASC")
+	err := r.db.Select(&faq, "SELECT id, id_order, id_faq, title, description FROM tbl_faq_title ORDER BY id_order ASC")
 	return faq, err
 }
 func (r repo) AutoIncrementIDOrder(idOrder int64) (int64, error) {
@@ -232,7 +236,7 @@ func (r repo) AutoDecrementIDOrder(idOrder int64) (int64, error) {
 }
 func (r repo) ListFaqTitleByIDFaq(idFaq int64) ([]modelFaq.FaqTitle, error) {
 	faq := []modelFaq.FaqTitle{}
-	err := r.db.Select(&faq, "SELECT * FROM tbl_faq_title where id_faq = ? ORDER BY id_order ASC", idFaq)
+	err := r.db.Select(&faq, "SELECT id, id_order, id_faq, title, description FROM tbl_faq_title where id_faq = ? ORDER BY id_order ASC", idFaq)
 	return faq, err
 }
 func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) {

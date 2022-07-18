@@ -9,6 +9,7 @@ import (
 	"math"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -152,10 +153,13 @@ func NewUploadFileInstance(r *http.Request, name string) (*UploadFile, error) {
 	filename = re.ReplaceAllString(filename, "")
 	filename = uniqueSuffix.String() + "_" + fileHeader.Filename
 
+	t := &url.URL{Path: filename}
+	encodedFilename := t.String()
+
 	s3name := fmt.Sprintf("%s_%s_%s",
 		time.Now().Format("20060102150405"), strings.ReplaceAll(uuid.New().String(), "-", ""), filename)
 
-	destinationFile := documentPath[OtherDocument] + uniqueSuffix.String() + "_" + fileHeader.Filename
+	destinationFile := documentPath[OtherDocument] + filename
 
 	//create file and copy
 	out, err := os.Create(destinationFile)
@@ -169,7 +173,7 @@ func NewUploadFileInstance(r *http.Request, name string) (*UploadFile, error) {
 		return nil, err
 	}
 
-	return &UploadFile{Name: filename,
+	return &UploadFile{Name: encodedFilename,
 		S3Name:     s3name,
 		Size:       fileHeader.Size,
 		Ext:        ext,

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"os"
 
 	modelLanding "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/domain/landing"
 	modelTnc "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/domain/tnc"
@@ -67,8 +68,14 @@ func (s service) ListBenefit() (int, []modelLanding.Benefit, error) {
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
 	}
+	benefit := []modelLanding.Benefit{}
+	for _, dataBenefit := range repo {
+		dataBenefit.Image = os.Getenv("BASE_URL_IMAGE") + dataBenefit.Image
 
-	return http.StatusOK, repo, nil
+		benefit = append(benefit, dataBenefit)
+	}
+
+	return http.StatusOK, benefit, nil
 }
 func (s service) CreateBenefit(title string, description string, path string) (int, *modelLanding.Benefit, error) {
 	model := &modelLanding.Benefit{
@@ -221,7 +228,7 @@ func (s service) GetLandingPage() (int, *resp.LandingPage, error) {
 			ID:          dataBenefit.ID,
 			Title:       dataBenefit.Title,
 			Description: dataBenefit.Description,
-			Image:       dataBenefit.Image,
+			Image:       os.Getenv("BASE_URL_IMAGE") + dataBenefit.Image,
 		}
 		respLandingPage.Benefit = append(respLandingPage.Benefit, respBenefit)
 	}

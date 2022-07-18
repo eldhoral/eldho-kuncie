@@ -23,7 +23,7 @@ type repo struct {
 //Loan limit
 func (r repo) GetLoanLimit() (*modelLanding.LoanLimit, error) {
 	loanLimit := &modelLanding.LoanLimit{}
-	err := r.db.Get(loanLimit, "SELECT * FROM tbl_loan_limit ORDER BY id ASC LIMIT 1")
+	err := r.db.Get(loanLimit, "SELECT id, loan_limit FROM tbl_loan_limit ORDER BY id ASC LIMIT 1")
 	return loanLimit, err
 }
 func (r repo) UpdateLoanLimit(limit string) (int64, error) {
@@ -44,12 +44,12 @@ func (r repo) UpdateLoanLimit(limit string) (int64, error) {
 //Benefit
 func (r repo) GetBenefitByID(id int64) (*modelLanding.Benefit, error) {
 	benefit := &modelLanding.Benefit{}
-	err := r.db.Get(benefit, "SELECT * FROM tbl_benefit WHERE id = ?", id)
+	err := r.db.Get(benefit, "SELECT id, title, description, image FROM tbl_benefit WHERE id = ?", id)
 	return benefit, err
 }
 func (r repo) ListBenefit() ([]modelLanding.Benefit, error) {
 	benefit := []modelLanding.Benefit{}
-	err := r.db.Select(&benefit, "SELECT * FROM tbl_benefit")
+	err := r.db.Select(&benefit, "SELECT id, title, description, image FROM tbl_benefit")
 	return benefit, err
 }
 func (r repo) CreateBenefit(b *modelLanding.Benefit) (*modelLanding.Benefit, error) {
@@ -115,12 +115,12 @@ func (r repo) DeleteBenefitByID(id int64) (httpStatus int, err error) {
 //Loan method
 func (r repo) GetLoanMethodByID(id int64) (*modelLanding.LoanMethod, error) {
 	loanMethod := &modelLanding.LoanMethod{}
-	err := r.db.Get(loanMethod, "SELECT * FROM tbl_loan_method WHERE id = ?", id)
+	err := r.db.Get(loanMethod, "SELECT id, title, description FROM tbl_loan_method WHERE id = ?", id)
 	return loanMethod, err
 }
 func (r repo) ListLoanMethod() ([]modelLanding.LoanMethod, error) {
 	loanMethod := []modelLanding.LoanMethod{}
-	err := r.db.Select(&loanMethod, "SELECT * FROM tbl_loan_method")
+	err := r.db.Select(&loanMethod, "SELECT id, title, description FROM tbl_loan_method")
 	return loanMethod, err
 }
 func (r repo) CreateLoanMethod(lm *modelLanding.LoanMethod) (*modelLanding.LoanMethod, error) {
@@ -169,12 +169,12 @@ func (r repo) DeleteLoanMethodByID(id int64) (httpStatus int, err error) {
 //Tnc
 func (r repo) GetTncMobile() (*modelTnc.TncMobile, error) {
 	tnc := &modelTnc.TncMobile{}
-	err := r.db.Get(tnc, "SELECT * FROM tbl_tnc_mobile ORDER BY id LIMIT 1")
+	err := r.db.Get(tnc, "SELECT id, description FROM tbl_tnc_mobile ORDER BY id LIMIT 1")
 	return tnc, err
 }
 func (r repo) GetTncMobileByID(id int64) (*modelTnc.TncMobile, error) {
 	tnc := &modelTnc.TncMobile{}
-	err := r.db.Get(tnc, "SELECT id, description, created_date, updated_date FROM tbl_tnc_mobile WHERE id = ?", id)
+	err := r.db.Get(tnc, "SELECT id, description FROM tbl_tnc_mobile WHERE id = ?", id)
 	return tnc, err
 }
 func (r repo) UpdateTncMobile(params data.Params) (int64, error) {
