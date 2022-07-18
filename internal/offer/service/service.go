@@ -3,7 +3,6 @@ package service
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -75,7 +74,6 @@ func (s service) ListBenefit() (int, []modelLanding.Benefit, error) {
 
 		benefit = append(benefit, dataBenefit)
 	}
-	fmt.Println(benefit)
 
 	return http.StatusOK, benefit, nil
 }
