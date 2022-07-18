@@ -160,7 +160,6 @@ func NewUploadFileInstance(r *http.Request, name string) (*UploadFile, error) {
 		time.Now().Format("20060102150405"), strings.ReplaceAll(uuid.New().String(), "-", ""), filename)
 
 	destinationFile := documentPath[OtherDocument] + filename
-	fmt.Println(fileHeader.Filename)
 
 	//create file and copy
 	out, err := os.Create(destinationFile)
