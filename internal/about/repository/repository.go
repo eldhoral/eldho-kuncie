@@ -185,7 +185,15 @@ func (r repo) UpdateFaqByID(id int64, params data.Params) (int64, error) {
 	return count, nil
 }
 func (r repo) DeleteFaqByID(id int64) (httpStatus int, err error) {
-	query := `DELETE FROM tbl_faq WHERE id = ?`
+	getIdOrder, err := r.GetFaqID(id)
+	// update the ordering number of id order
+	query := "UPDATE tbl_faq SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
+	_, err = r.db.Exec(query, getIdOrder.IDOrder)
+	if err != nil {
+		return 0, err
+	}
+
+	query = `DELETE FROM tbl_faq WHERE id = ?`
 	_, err = r.db.Exec(query, id)
 	if err != nil {
 		return http.StatusNotFound, err
@@ -203,6 +211,16 @@ func (r repo) GetFaqTitleID(id int64) (*modelFaq.FaqTitle, error) {
 func (r repo) GetFaqTitleIDOrder(idOrder int64) (*modelFaq.FaqTitle, error) {
 	faq := &modelFaq.FaqTitle{}
 	err := r.db.Get(faq, "SELECT id, id_order, id_faq, title, description FROM tbl_faq_title WHERE id_order = ? ORDER BY id_order ASC", idOrder)
+	return faq, err
+}
+func (r repo) GetFaqTitleLastIDOrder(idOrder int64) (*modelFaq.FAQTitleResponseMAX, error) {
+	faq := &modelFaq.FAQTitleResponseMAX{}
+	err := r.db.Get(faq, "select max(id_order), id_faq from tbl_faq_title where id_faq < ? group by id_faq order by id_faq DESC limit 1", idOrder)
+	return faq, err
+}
+func (r repo) GetFaqTitleFirstIDOrder(idOrder int64) (*modelFaq.FAQTitleResponseMIN, error) {
+	faq := &modelFaq.FAQTitleResponseMIN{}
+	err := r.db.Get(faq, "select min(id_order), id_faq from tbl_faq_title where id_faq > ? group by id_faq  order by id_faq ASC limit 1", idOrder)
 	return faq, err
 }
 func (r repo) ListFaqTitle() ([]modelFaq.FaqTitle, error) {
@@ -225,6 +243,18 @@ func (r repo) AutoIncrementIDOrder(idOrder int64) (int64, error) {
 func (r repo) AutoDecrementIDOrder(idOrder int64) (int64, error) {
 	query := "UPDATE tbl_faq_title SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
 	result, err := r.db.Exec(query, idOrder)
+	if err != nil {
+		return 0, err
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+func (r repo) DecrementIDOrderByDecrementNumber(decrementNumber int64, idOrder int64) (int64, error) {
+	query := "UPDATE tbl_faq_title SET id_order = id_order - ? WHERE id_order >= ? ORDER BY id_order ASC"
+	result, err := r.db.Exec(query, decrementNumber, idOrder)
 	if err != nil {
 		return 0, err
 	}
@@ -295,6 +325,15 @@ func (r repo) DeleteFaqTitleByID(id int64) (httpStatus int, err error) {
 
 	query := `DELETE FROM tbl_faq_title WHERE id = ?`
 	_, err = r.db.Exec(query, id)
+	if err != nil {
+		return http.StatusNotFound, err
+	}
+
+	return http.StatusOK, nil
+}
+func (r repo) DeleteFaqTitleByIDFAQ(idFaq int64) (httpStatus int, err error) {
+	query := `DELETE FROM tbl_faq_title WHERE id_faq = ?`
+	_, err = r.db.Exec(query, idFaq)
 	if err != nil {
 		return http.StatusNotFound, err
 	}

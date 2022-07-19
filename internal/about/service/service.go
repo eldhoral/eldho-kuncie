@@ -181,12 +181,33 @@ func (s service) UpdateFaqByID(id int64, params data.Params) (int, error) {
 	return http.StatusOK, nil
 }
 func (s service) DeleteFaqByID(id int64) (httpStatus int, err error) {
-	status, err := s.aboutRepo.DeleteFaqByID(id)
+	status, err := s.aboutRepo.DeleteFaqTitleByIDFAQ(id)
+	if err == sql.ErrNoRows {
+		return status, errors.New("ID FAQ not found")
+	}
+	status, err = s.aboutRepo.DeleteFaqByID(id)
 	if err == sql.ErrNoRows {
 		return status, errors.New("ID FAQ not found")
 	}
 	if err != nil {
 		return http.StatusInternalServerError, err
+	}
+	modelLast, err := s.aboutRepo.GetFaqTitleLastIDOrder(id)
+	modelFirst, err := s.aboutRepo.GetFaqTitleFirstIDOrder(id)
+	if err == sql.ErrNoRows {
+		return http.StatusOK, nil
+	}
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	decrementNumber := (modelFirst.IDOrder - modelLast.IDOrder) - int64(1)
+	count, err := s.aboutRepo.DecrementIDOrderByDecrementNumber(decrementNumber, modelFirst.IDOrder)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	if count == 0 {
+		return http.StatusNotFound, errors.New("Error when decrementing id order")
 	}
 	return http.StatusOK, nil
 }
@@ -236,12 +257,22 @@ func (s service) CreateFaqTitle(params data.Params) (int, *modelFaq.FaqTitle, er
 		Description: description,
 		IDOrder:     idOrder,
 	}
+	checkIdFAQIfExist, err := s.aboutRepo.GetFaqID(model.IDFaq)
+	if err == sql.ErrNoRows {
+		return http.StatusNotFound, nil, errors.New("ID FAQ is not found")
+	}
+	if err != nil {
+		return http.StatusInternalServerError, nil, errors.New("ID FAQ is not found")
+	}
+	if checkIdFAQIfExist.ID == 0 {
+		return http.StatusNoContent, nil, errors.New("ID FAQ is not found")
+	}
 	repo, err := s.aboutRepo.CreateFaqTitle(model)
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
 	}
 
-	return http.StatusCreated, repo, nil
+	return http.StatusFound, repo, nil
 }
 func (s service) UpdateFaqTitleByID(id int64, params data.Params) (int, error) {
 	_, err := s.aboutRepo.UpdateFaqTitleByID(id, params)

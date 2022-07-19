@@ -19,3 +19,19 @@ type FaqTitle struct {
 	CreatedDate time.Time `json:"created_date" db:"created_date"`
 	UpdatedDate time.Time `json:"updated_date" db:"updated_date"`
 }
+
+type FAQTitleResponseMIN struct {
+	ID          int64  `json:"id" db:"id"`
+	IDOrder     int64  `json:"min(id_order)" db:"min(id_order)"`
+	IDFaq       int64  `json:"id_faq" db:"id_faq"`
+	Title       string `json:"title" db:"title"`
+	Description string `json:"description" db:"description"`
+}
+
+type FAQTitleResponseMAX struct {
+	ID          int64  `json:"id" db:"id"`
+	IDOrder     int64  `json:"max(id_order)" db:"max(id_order)"`
+	IDFaq       int64  `json:"id_faq" db:"id_faq"`
+	Title       string `json:"title" db:"title"`
+	Description string `json:"description" db:"description"`
+}

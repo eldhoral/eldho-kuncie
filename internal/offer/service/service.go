@@ -228,7 +228,7 @@ func (s service) GetLandingPage() (int, *resp.LandingPage, error) {
 			ID:          dataBenefit.ID,
 			Title:       dataBenefit.Title,
 			Description: dataBenefit.Description,
-			Image:       os.Getenv("BASE_URL_IMAGE") + dataBenefit.Image,
+			Image:       dataBenefit.Image,
 		}
 		respLandingPage.Benefit = append(respLandingPage.Benefit, respBenefit)
 	}
