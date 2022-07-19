@@ -191,9 +191,26 @@ func (r repo) UpdateFaqByID(id int64, params data.Params) (int64, error) {
 }
 func (r repo) DeleteFaqByID(id int64) (count int64, err error) {
 	getIdOrder, err := r.GetFaqID(id)
-	// update the ordering number of id order
-	query := "UPDATE tbl_faq SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
-	result, err := r.db.Exec(query, getIdOrder.IDOrder)
+	if getIdOrder.IDOrder == 0 {
+		return 0, nil
+	}
+	if err != nil {
+		return 0, err
+	}
+
+	// start transaction
+	tx, err := r.db.Beginx()
+	defer func() {
+		if err == nil {
+			err = tx.Commit()
+		} else {
+			err = tx.Rollback()
+		}
+	}()
+
+	// delete id_faq rows on tbl_faq_title
+	query := `DELETE FROM tbl_faq_title WHERE id_faq = ?`
+	result, err := tx.Exec(query, id)
 	if err != nil {
 		return 0, err
 	}
@@ -203,8 +220,21 @@ func (r repo) DeleteFaqByID(id int64) (count int64, err error) {
 		return 0, err
 	}
 
+	// update the ordering number of id order
+	// decrement
+	query = "UPDATE tbl_faq SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
+	result, err = tx.Exec(query, getIdOrder.IDOrder)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err = result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	// delete id rows on tbl_faq
 	query = `DELETE FROM tbl_faq WHERE id = ?`
-	result, err = r.db.Exec(query, id)
+	result, err = tx.Exec(query, id)
 	if err != nil {
 		return 0, err
 	}
@@ -285,8 +315,24 @@ func (r repo) ListFaqTitleByIDFaq(idFaq int64) ([]modelFaq.FaqTitle, error) {
 	return faq, err
 }
 func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) {
+	// start transaction
+	tx, err := r.db.Beginx()
+	defer func() {
+		if err == nil {
+			err = tx.Commit()
+		} else {
+			err = tx.Rollback()
+		}
+	}()
+
 	// update the ordering number of id order
-	_, err := r.AutoIncrementIDOrder(ft.IDOrder)
+	// increment
+	query := "UPDATE tbl_faq SET id_order = id_order + 1 WHERE id_order >= ? ORDER BY id_order ASC"
+	result, err := tx.Exec(query, ft.IDOrder)
+	if err != nil {
+		return nil, err
+	}
+	_, err = result.RowsAffected()
 	if err != nil {
 		return nil, err
 	}
@@ -297,9 +343,9 @@ func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) 
 		"description": ft.Description,
 		"id_order":    ft.IDOrder,
 	}
-	query := `INSERT INTO tbl_faq_title
+	query = `INSERT INTO tbl_faq_title
 		SET id_faq = :id_faq, title = :title, description = :description, id_order = :id_order`
-	cost, err := r.db.NamedExec(query, arg)
+	cost, err := tx.NamedExec(query, arg)
 	if err != nil {
 		return nil, err
 	}
@@ -339,11 +385,36 @@ func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
 }
 func (r repo) DeleteFaqTitleByID(id int64) (count int64, err error) {
 	getIdOrder, err := r.GetFaqTitleID(id)
+	if getIdOrder.IDOrder == 0 {
+		return 0, nil
+	}
+	if err != nil {
+		return 0, err
+	}
+	// start transaction
+	tx, err := r.db.Beginx()
+	defer func() {
+		if err == nil {
+			err = tx.Commit()
+		} else {
+			err = tx.Rollback()
+		}
+	}()
 	// update the ordering number of id order
-	_, err = r.AutoDecrementIDOrder(getIdOrder.IDOrder)
+	// decrement
+	query := "UPDATE tbl_faq SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
+	result, err := tx.Exec(query, getIdOrder.IDOrder)
+	if err != nil {
+		return 0, err
+	}
 
-	query := `DELETE FROM tbl_faq_title WHERE id = ?`
-	result, err := r.db.Exec(query, id)
+	count, err = result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	query = `DELETE FROM tbl_faq_title WHERE id = ?`
+	result, err = tx.Exec(query, id)
 	if err != nil {
 		return 0, err
 	}
