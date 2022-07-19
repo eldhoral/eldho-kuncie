@@ -181,20 +181,23 @@ func (s service) UpdateFaqByID(id int64, params data.Params) (int, error) {
 	return http.StatusOK, nil
 }
 func (s service) DeleteFaqByID(id int64) (httpStatus int, err error) {
-	status, err := s.aboutRepo.DeleteFaqTitleByIDFAQ(id)
-	if err == sql.ErrNoRows {
-		return status, errors.New("ID FAQ not found")
-	}
-	status, err = s.aboutRepo.DeleteFaqByID(id)
-	if err == sql.ErrNoRows {
-		return status, errors.New("ID FAQ not found")
-	}
+	count, err := s.aboutRepo.DeleteFaqTitleByIDFAQ(id)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
+	if count == 0 {
+		return http.StatusNotFound, errors.New("ID FAQ Title is not found")
+	}
+	count, err = s.aboutRepo.DeleteFaqByID(id)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	if count == 0 {
+		return http.StatusNotFound, errors.New("ID FAQ is not found")
+	}
 	modelLast, err := s.aboutRepo.GetFaqTitleLastIDOrder(id)
 	modelFirst, err := s.aboutRepo.GetFaqTitleFirstIDOrder(id)
-	if err == sql.ErrNoRows {
+	if modelFirst.IDOrder == 0 {
 		return http.StatusOK, nil
 	}
 	if err != nil {
@@ -202,7 +205,7 @@ func (s service) DeleteFaqByID(id int64) (httpStatus int, err error) {
 	}
 
 	decrementNumber := (modelFirst.IDOrder - modelLast.IDOrder) - int64(1)
-	count, err := s.aboutRepo.DecrementIDOrderByDecrementNumber(decrementNumber, modelFirst.IDOrder)
+	count, err = s.aboutRepo.DecrementIDOrderByDecrementNumber(decrementNumber, modelFirst.IDOrder)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -262,10 +265,10 @@ func (s service) CreateFaqTitle(params data.Params) (int, *modelFaq.FaqTitle, er
 		return http.StatusNotFound, nil, errors.New("ID FAQ is not found")
 	}
 	if err != nil {
-		return http.StatusInternalServerError, nil, errors.New("ID FAQ is not found")
+		return http.StatusInternalServerError, nil, errors.New("There is error related to server")
 	}
 	if checkIdFAQIfExist.ID == 0 {
-		return http.StatusNoContent, nil, errors.New("ID FAQ is not found")
+		return http.StatusNotFound, nil, errors.New("ID FAQ is not found")
 	}
 	repo, err := s.aboutRepo.CreateFaqTitle(model)
 	if err != nil {
@@ -284,29 +287,41 @@ func (s service) UpdateFaqTitleByID(id int64, params data.Params) (int, error) {
 	}
 
 	if repo.IDOrder > params.GetInt64("id_order") {
-		_, err = s.aboutRepo.AutoIncrementIDOrder(params.GetInt64("id_order"))
+		count, err := s.aboutRepo.AutoIncrementIDOrder(params.GetInt64("id_order"))
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
+		if count == 0 {
+			return http.StatusNotFound, errors.New("ID Order is not found")
+		}
 	}
 	if repo.IDOrder < params.GetInt64("id_order") {
-		_, err = s.aboutRepo.AutoDecrementIDOrder(params.GetInt64("id_order"))
+		count, err := s.aboutRepo.AutoDecrementIDOrder(params.GetInt64("id_order"))
+		if err != nil {
+			return http.StatusInternalServerError, err
+		}
+		if count == 0 {
+			return http.StatusNotFound, errors.New("ID Order is not found")
+		}
 	}
 
-	_, err = s.aboutRepo.UpdateFaqTitleByID(id, params)
-	if err == sql.ErrNoRows {
-		return http.StatusNotFound, errors.New("ID FAQ title not found")
-	}
+	count, err := s.aboutRepo.UpdateFaqTitleByID(id, params)
 	if err != nil {
 		return http.StatusInternalServerError, err
+	}
+	if count == 0 {
+		return http.StatusNotFound, errors.New("ID FAQ Title is not found")
 	}
 
 	return http.StatusOK, nil
 }
 func (s service) DeleteFaqTitleByID(id int64) (httpStatus int, err error) {
-	status, err := s.aboutRepo.DeleteFaqTitleByID(id)
-	if err == sql.ErrNoRows {
-		return status, errors.New("ID FAQ title not found")
-	}
+	count, err := s.aboutRepo.DeleteFaqTitleByID(id)
 	if err != nil {
 		return http.StatusInternalServerError, err
+	}
+	if count == 0 {
+		return http.StatusNotFound, errors.New("ID FAQ is not found")
 	}
 	return http.StatusOK, nil
 }

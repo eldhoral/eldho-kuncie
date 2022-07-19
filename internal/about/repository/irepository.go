@@ -29,7 +29,7 @@ type Repository interface {
 	DecrementIDOrderByDecrementNumber(decrementNumber int64, idOrder int64) (int64, error)
 	CreateFaq(ce *modelFaq.Faq) (*modelFaq.Faq, error)
 	UpdateFaqByID(id int64, params data.Params) (int64, error)
-	DeleteFaqByID(id int64) (httpStatus int, err error)
+	DeleteFaqByID(id int64) (count int64, err error)
 
 	// FAQ Title
 	GetFaqTitleID(id int64) (*modelFaq.FaqTitle, error)
@@ -40,6 +40,6 @@ type Repository interface {
 	ListFaqTitleByIDFaq(idFaq int64) ([]modelFaq.FaqTitle, error)
 	CreateFaqTitle(ce *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error)
 	UpdateFaqTitleByID(id int64, params data.Params) (int64, error)
-	DeleteFaqTitleByID(id int64) (httpStatus int, err error)
-	DeleteFaqTitleByIDFAQ(idFaq int64) (httpStatus int, err error)
+	DeleteFaqTitleByID(id int64) (count int64, err error)
+	DeleteFaqTitleByIDFAQ(idFaq int64) (count int64, err error)
 }

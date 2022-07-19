@@ -184,22 +184,32 @@ func (r repo) UpdateFaqByID(id int64, params data.Params) (int64, error) {
 	}
 	return count, nil
 }
-func (r repo) DeleteFaqByID(id int64) (httpStatus int, err error) {
+func (r repo) DeleteFaqByID(id int64) (count int64, err error) {
 	getIdOrder, err := r.GetFaqID(id)
 	// update the ordering number of id order
 	query := "UPDATE tbl_faq SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
-	_, err = r.db.Exec(query, getIdOrder.IDOrder)
+	result, err := r.db.Exec(query, getIdOrder.IDOrder)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err = result.RowsAffected()
 	if err != nil {
 		return 0, err
 	}
 
 	query = `DELETE FROM tbl_faq WHERE id = ?`
-	_, err = r.db.Exec(query, id)
+	result, err = r.db.Exec(query, id)
 	if err != nil {
-		return http.StatusNotFound, err
+		return 0, err
 	}
 
-	return http.StatusOK, nil
+	count, err = result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
 
 //Faq Title
@@ -272,6 +282,9 @@ func (r repo) ListFaqTitleByIDFaq(idFaq int64) ([]modelFaq.FaqTitle, error) {
 func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) {
 	// update the ordering number of id order
 	_, err := r.AutoIncrementIDOrder(ft.IDOrder)
+	if err != nil {
+		return nil, err
+	}
 
 	arg := map[string]interface{}{
 		"id_faq":      ft.IDFaq,
@@ -319,25 +332,34 @@ func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
 	}
 	return count, nil
 }
-func (r repo) DeleteFaqTitleByID(id int64) (httpStatus int, err error) {
+func (r repo) DeleteFaqTitleByID(id int64) (count int64, err error) {
 	getIdOrder, err := r.GetFaqTitleID(id)
 	// update the ordering number of id order
 	_, err = r.AutoDecrementIDOrder(getIdOrder.IDOrder)
 
 	query := `DELETE FROM tbl_faq_title WHERE id = ?`
-	_, err = r.db.Exec(query, id)
+	result, err := r.db.Exec(query, id)
 	if err != nil {
-		return http.StatusNotFound, err
+		return 0, err
+	}
+	count, err = result.RowsAffected()
+	if err != nil {
+		return 0, err
 	}
 
-	return http.StatusOK, nil
+	return count, nil
 }
-func (r repo) DeleteFaqTitleByIDFAQ(idFaq int64) (httpStatus int, err error) {
+func (r repo) DeleteFaqTitleByIDFAQ(idFaq int64) (count int64, err error) {
 	query := `DELETE FROM tbl_faq_title WHERE id_faq = ?`
-	_, err = r.db.Exec(query, idFaq)
+	result, err := r.db.Exec(query, idFaq)
 	if err != nil {
-		return http.StatusNotFound, err
+		return 0, err
 	}
 
-	return http.StatusOK, nil
+	count, err = result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
