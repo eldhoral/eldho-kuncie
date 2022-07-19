@@ -275,7 +275,22 @@ func (s service) CreateFaqTitle(params data.Params) (int, *modelFaq.FaqTitle, er
 	return http.StatusFound, repo, nil
 }
 func (s service) UpdateFaqTitleByID(id int64, params data.Params) (int, error) {
-	_, err := s.aboutRepo.UpdateFaqTitleByID(id, params)
+	repo, err := s.aboutRepo.GetFaqTitleID(id)
+	if err == sql.ErrNoRows {
+		return http.StatusNotFound, errors.New("ID FAQ Title is not found")
+	}
+	if err != nil {
+		return http.StatusInternalServerError, errors.New("ID FAQ Title is not found")
+	}
+
+	if repo.IDOrder > params.GetInt64("id_order") {
+		_, err = s.aboutRepo.AutoIncrementIDOrder(params.GetInt64("id_order"))
+	}
+	if repo.IDOrder < params.GetInt64("id_order") {
+		_, err = s.aboutRepo.AutoDecrementIDOrder(params.GetInt64("id_order"))
+	}
+
+	_, err = s.aboutRepo.UpdateFaqTitleByID(id, params)
 	if err == sql.ErrNoRows {
 		return http.StatusNotFound, errors.New("ID FAQ title not found")
 	}

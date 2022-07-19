@@ -374,13 +374,15 @@ func (h HTTPHandler) UpdateFAQTitle(ctx *app.Context) *server.Response {
 	idFaq := ctx.Request.FormValue("id_faq")
 	title := ctx.Request.FormValue("title")
 	description := ctx.Request.FormValue("description")
+	idOrder := ctx.Request.FormValue("id_order")
 
 	params := data.NewParamsWrapper()
 	params.Add("id_faq", idFaq)
 	params.Add("title", title)
 	params.Add("description", description)
+	params.Add("id_order", idOrder)
 
-	if title == "" && idFaq == "" && description == "" {
+	if title == "" && idFaq == "" && description == "" && idOrder == "" {
 		return h.AsMobileJson(ctx, http.StatusBadRequest, "Value form is a must to one of these", constant.EmptyArray)
 	}
 
