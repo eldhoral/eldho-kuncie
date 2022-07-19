@@ -196,6 +196,12 @@ func (s service) DeleteFaqByID(id int64) (httpStatus int, err error) {
 		return http.StatusNotFound, errors.New("ID FAQ is not found")
 	}
 	modelLast, err := s.aboutRepo.GetFaqTitleLastIDOrder(id)
+	if modelLast.IDOrder == 0 {
+		return http.StatusOK, nil
+	}
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
 	modelFirst, err := s.aboutRepo.GetFaqTitleFirstIDOrder(id)
 	if modelFirst.IDOrder == 0 {
 		return http.StatusOK, nil
