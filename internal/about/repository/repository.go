@@ -115,14 +115,19 @@ func (r repo) UpdateCostExplanationByID(id int64, params data.Params) (int64, er
 	}
 	return count, nil
 }
-func (r repo) DeleteCostExplanationByID(id int64) (httpStatus int, err error) {
+func (r repo) DeleteCostExplanationByID(id int64) (count int64, err error) {
 	query := `DELETE FROM tbl_cost_explain WHERE id = ?`
-	_, err = r.db.Exec(query, id)
+	result, err := r.db.Exec(query, id)
 	if err != nil {
 		return http.StatusNotFound, err
 	}
 
-	return http.StatusOK, nil
+	count, err = result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
 
 //Faq

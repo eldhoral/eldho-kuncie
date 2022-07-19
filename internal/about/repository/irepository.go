@@ -18,7 +18,7 @@ type Repository interface {
 	ListCostExplanation() ([]modelCost.CostExplanation, error)
 	CreateCostExplanation(ce *modelCost.CostExplanation) (*modelCost.CostExplanation, error)
 	UpdateCostExplanationByID(id int64, params data.Params) (int64, error)
-	DeleteCostExplanationByID(id int64) (httpStatus int, err error)
+	DeleteCostExplanationByID(id int64) (count int64, err error)
 
 	// FAQ
 	GetFaqID(id int64) (*modelFaq.Faq, error)

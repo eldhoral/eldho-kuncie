@@ -47,12 +47,12 @@ func (s service) ListCost() (int, []modelCost.Cost, error) {
 	return http.StatusOK, repo, nil
 }
 func (s service) UpdateCostByID(id int64, params data.Params) (int, error) {
-	_, err := s.aboutRepo.UpdateCostByID(id, params)
-	if err == sql.ErrNoRows {
-		return http.StatusNotFound, errors.New("ID Cost not found")
-	}
+	count, err := s.aboutRepo.UpdateCostByID(id, params)
 	if err != nil {
 		return http.StatusInternalServerError, err
+	}
+	if count == 0 {
+		return http.StatusNotFound, errors.New("0 rows affected when updating Cost")
 	}
 
 	return http.StatusOK, nil
@@ -96,23 +96,23 @@ func (s service) CreateCostExplain(params data.Params) (int, *modelCost.CostExpl
 	return http.StatusCreated, repo, nil
 }
 func (s service) UpdateCostExplainByID(id int64, params data.Params) (int, error) {
-	_, err := s.aboutRepo.UpdateCostExplanationByID(id, params)
-	if err == sql.ErrNoRows {
-		return http.StatusNotFound, errors.New("ID Cost Explain not found")
-	}
+	count, err := s.aboutRepo.UpdateCostExplanationByID(id, params)
 	if err != nil {
 		return http.StatusInternalServerError, err
+	}
+	if count == 0 {
+		return http.StatusNotFound, errors.New("0 rows affected when updating Cost Explain")
 	}
 
 	return http.StatusOK, nil
 }
 func (s service) DeleteCostExplainByID(id int64) (httpStatus int, err error) {
-	status, err := s.aboutRepo.DeleteCostExplanationByID(id)
-	if err == sql.ErrNoRows {
-		return status, errors.New("Cost ID Explain not found")
-	}
+	count, err := s.aboutRepo.DeleteCostExplanationByID(id)
 	if err != nil {
 		return http.StatusInternalServerError, err
+	}
+	if count == 0 {
+		return http.StatusNotFound, errors.New("0 rows affected when updating FAQ")
 	}
 	return http.StatusOK, nil
 }
@@ -170,12 +170,12 @@ func (s service) UpdateFaqByID(id int64, params data.Params) (int, error) {
 		}
 	}
 
-	_, err := s.aboutRepo.UpdateFaqByID(id, params)
-	if err == sql.ErrNoRows {
-		return http.StatusNotFound, errors.New("ID FAQ not found")
-	}
+	count, err := s.aboutRepo.UpdateFaqByID(id, params)
 	if err != nil {
 		return http.StatusInternalServerError, err
+	}
+	if count == 0 {
+		return http.StatusNotFound, errors.New("0 rows affected when updating FAQ")
 	}
 
 	return http.StatusOK, nil
