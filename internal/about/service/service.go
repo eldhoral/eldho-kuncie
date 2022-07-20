@@ -181,14 +181,7 @@ func (s service) UpdateFaqByID(id int64, params data.Params) (int, error) {
 	return http.StatusOK, nil
 }
 func (s service) DeleteFaqByID(id int64) (httpStatus int, err error) {
-	count, err := s.aboutRepo.DeleteFaqTitleByIDFAQ(id)
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-	if count == 0 {
-		return http.StatusNotFound, errors.New("ID FAQ Title is not found")
-	}
-	count, err = s.aboutRepo.DeleteFaqByID(id)
+	count, err := s.aboutRepo.DeleteFaqByID(id)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -197,13 +190,15 @@ func (s service) DeleteFaqByID(id int64) (httpStatus int, err error) {
 	}
 	modelLast, err := s.aboutRepo.GetFaqTitleLastIDOrder(id)
 	if modelLast.IDOrder == 0 {
-		return http.StatusOK, nil
+		return http.StatusNotFound, nil
 	}
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 	modelFirst, err := s.aboutRepo.GetFaqTitleFirstIDOrder(id)
 	if modelFirst.IDOrder == 0 {
+		// return statusOK because there is no ID FAQ > id
+		// no need to continue logic below
 		return http.StatusOK, nil
 	}
 	if err != nil {
