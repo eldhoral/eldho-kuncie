@@ -327,7 +327,7 @@ func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) 
 
 	// update the ordering number of id order
 	// increment
-	query := "UPDATE tbl_faq SET id_order = id_order + 1 WHERE id_order >= ? ORDER BY id_order ASC"
+	query := "UPDATE tbl_faq_title SET id_order = id_order + 1 WHERE id_order >= ? ORDER BY id_order ASC"
 	result, err := tx.Exec(query, ft.IDOrder)
 	if err != nil {
 		return nil, err
@@ -361,11 +361,21 @@ func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) 
 		UpdatedDate: time.Now()}, nil
 }
 func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
+	idOrder := params.GetString("id_order_change")
+	title := ""
+	idFaq := ""
+	description := ""
+	if idOrder == "" {
+		title = params.GetString("title")
+		idFaq = params.GetString("id_faq")
+		description = params.GetString("description")
+		idOrder = params.GetString("id_order")
+	}
 	arg := map[string]interface{}{
-		"title":       params.GetString("title"),
-		"id_faq":      params.GetString("id_faq"),
-		"description": params.GetString("description"),
-		"id_order":    params.GetString("id_order"),
+		"title":       title,
+		"id_faq":      idFaq,
+		"description": description,
+		"id_order":    idOrder,
 		"id":          id,
 	}
 	column := []string{"title", "id_faq", "description", "id_order"}
@@ -373,6 +383,23 @@ func (r repo) UpdateFaqTitleByID(id int64, params data.Params) (int64, error) {
 
 	query := "UPDATE tbl_faq_title SET " + columns +
 		"WHERE id = :id"
+	result, err := r.db.NamedExec(query, arg)
+	if err != nil {
+		return 0, err
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+func (r repo) UpdateFaqTitleIDOrderByID(id int64, idOrder int64) (int64, error) {
+	arg := map[string]interface{}{
+		"id_order": idOrder,
+		"id":       id,
+	}
+
+	query := "UPDATE tbl_faq_title SET id_order = :id_order WHERE id = :id"
 	result, err := r.db.NamedExec(query, arg)
 	if err != nil {
 		return 0, err
@@ -402,7 +429,7 @@ func (r repo) DeleteFaqTitleByID(id int64) (count int64, err error) {
 	}()
 	// update the ordering number of id order
 	// decrement
-	query := "UPDATE tbl_faq SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
+	query := "UPDATE tbl_faq_title SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
 	result, err := tx.Exec(query, getIdOrder.IDOrder)
 	if err != nil {
 		return 0, err
