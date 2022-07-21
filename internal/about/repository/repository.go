@@ -402,7 +402,7 @@ func (r repo) DeleteFaqTitleByID(id int64) (count int64, err error) {
 	}()
 	// update the ordering number of id order
 	// decrement
-	query := "UPDATE tbl_faq SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
+	query := "UPDATE tbl_faq_title SET id_order = id_order - 1 WHERE id_order >= ? ORDER BY id_order ASC"
 	result, err := tx.Exec(query, getIdOrder.IDOrder)
 	if err != nil {
 		return 0, err
