@@ -20,6 +20,10 @@ func (p Params) Add(key string, val interface{}) {
 	p.body[key] = val
 }
 
+func (p Params) Delete(key string) {
+	delete(p.body, key)
+}
+
 func (p Params) GetInt(key string) int {
 	if val, ok := p.body[key].(int); ok {
 		return val

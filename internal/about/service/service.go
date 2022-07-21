@@ -287,22 +287,21 @@ func (s service) UpdateFaqTitleByID(id int64, params data.Params) (int, error) {
 		return http.StatusInternalServerError, errors.New("ID FAQ Title is not found")
 	}
 
-	if repo.IDOrder > params.GetInt64("id_order") {
-		count, err := s.aboutRepo.AutoIncrementIDOrder(params.GetInt64("id_order"))
+	if repo.IDOrder != params.GetInt64("id_order") {
+		getFaqTitle, err := s.aboutRepo.GetFaqTitleIDOrder(params.GetInt64("id_order"))
+		if err == sql.ErrNoRows {
+			return http.StatusNotFound, errors.New("ID Order FAQ Title is not found")
+		}
+		if err != nil {
+			return http.StatusInternalServerError, errors.New("ID Order FAQ Title is not found")
+		}
+
+		count, err := s.aboutRepo.UpdateFaqTitleIDOrderByID(getFaqTitle.ID, repo.IDOrder)
 		if err != nil {
 			return http.StatusInternalServerError, err
 		}
 		if count == 0 {
-			return http.StatusNotFound, errors.New("ID Order is not found")
-		}
-	}
-	if repo.IDOrder < params.GetInt64("id_order") {
-		count, err := s.aboutRepo.AutoDecrementIDOrder(params.GetInt64("id_order"))
-		if err != nil {
-			return http.StatusInternalServerError, err
-		}
-		if count == 0 {
-			return http.StatusNotFound, errors.New("ID Order is not found")
+			return http.StatusNotFound, errors.New("ID FAQ Title is not found")
 		}
 	}
 
