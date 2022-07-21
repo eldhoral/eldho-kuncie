@@ -327,7 +327,7 @@ func (r repo) CreateFaqTitle(ft *modelFaq.FaqTitle) (*modelFaq.FaqTitle, error) 
 
 	// update the ordering number of id order
 	// increment
-	query := "UPDATE tbl_faq SET id_order = id_order + 1 WHERE id_order >= ? ORDER BY id_order ASC"
+	query := "UPDATE tbl_faq_title SET id_order = id_order + 1 WHERE id_order >= ? ORDER BY id_order ASC"
 	result, err := tx.Exec(query, ft.IDOrder)
 	if err != nil {
 		return nil, err
