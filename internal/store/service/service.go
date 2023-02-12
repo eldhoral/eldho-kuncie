@@ -43,7 +43,7 @@ func (s service) CreateCheckout(params data.Params) (httpStatus int, err error) 
 	productIds := []int64{params.GetInt64("product_id")}
 	productQuantity, err := s.storeRepo.CheckQuantityByProductIds(productIds)
 	if len((*productQuantity)) == 0 {
-		return http.StatusNotFound, purchasement, errors.New("No checkout was found")
+		return http.StatusNotFound, errors.New("No checkout was found")
 	}
 	if err != nil {
 		fmt.Println(err)
