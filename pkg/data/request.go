@@ -9,7 +9,7 @@ import (
 	"reflect"
 	"strconv"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/filedata"
+	"github.com/eldhoral/eldho-kuncie/pkg/data/filedata"
 
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"

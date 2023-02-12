@@ -1,1 +1,0 @@
-ALTER TABLE `tbl_benefit` MODIFY COLUMN `image` varchar(250) NOT NULL;

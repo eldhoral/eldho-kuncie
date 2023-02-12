@@ -5,7 +5,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/app/api"
+	"github.com/eldhoral/eldho-kuncie/app/api"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -20,7 +20,7 @@ var HttpCmd = &cobra.Command{
 		logrus.Infof("Starting the server at :%s", os.Getenv("HTTP_SERVER_PORT"))
 		initHTTP()
 
-		app := api.New(os.Getenv("APP_NAME"), baseHandler, offerHandler, aboutHandler)
+		app := api.New(os.Getenv("APP_NAME"), baseHandler, storeHandler)
 
 		echan := make(chan error)
 		go func() {

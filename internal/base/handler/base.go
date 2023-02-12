@@ -7,15 +7,14 @@ import (
 	"net/http"
 	"os"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/metric"
+	"github.com/eldhoral/eldho-kuncie/pkg/metric"
 
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 
-	abSer "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/service"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/app"
-	ofSer "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/service"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/httpclient"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/server"
+	"github.com/eldhoral/eldho-kuncie/internal/base/app"
+	storeSer "github.com/eldhoral/eldho-kuncie/internal/store/service"
+	"github.com/eldhoral/eldho-kuncie/pkg/httpclient"
+	"github.com/eldhoral/eldho-kuncie/pkg/server"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
@@ -24,12 +23,12 @@ import (
 type HandlerFn func(*app.Context) *server.Response
 
 type BaseHTTPHandler struct {
-	Handlers         interface{}
-	DB               *sqlx.DB
-	HTTPClient       httpclient.Client
-	Params           map[string]string
-	OfferService     ofSer.Service
-	AboutService     abSer.Service
+	Handlers   interface{}
+	DB         *sqlx.DB
+	HTTPClient httpclient.Client
+	Params     map[string]string
+
+	StoreService     storeSer.Service
 	StatsdMonitoring metric.StatsdMonitoring
 }
 
@@ -37,15 +36,15 @@ func NewBaseHTTPHandler(
 	db *sqlx.DB,
 	httpClient httpclient.Client,
 	params map[string]string,
-	offerService ofSer.Service,
-	aboutService abSer.Service,
+
+	storeService storeSer.Service,
+
 	statsdMonitoring metric.StatsdMonitoring,
 
 ) *BaseHTTPHandler {
 
 	return &BaseHTTPHandler{DB: db, HTTPClient: httpClient, Params: params,
-		OfferService:     offerService,
-		AboutService:     aboutService,
+		StoreService:     storeService,
 		StatsdMonitoring: statsdMonitoring,
 	}
 }
@@ -58,40 +57,6 @@ func (h BaseHTTPHandler) AsJson(ctx *app.Context, status int, message string, da
 		Data:         data,
 		Version:      os.Getenv("APP_VERSION"),
 		ResponseType: server.DefaultResponseType,
-	}
-}
-
-// AsMobileStatusOK always return httpStatus: 200, but Status field: 500,400,200...
-func (h BaseHTTPHandler) AsMobileStatusOK(ctx *app.Context, status int, message string, data interface{}) *server.Response {
-	return &server.Response{
-		Status:       status,
-		Message:      message,
-		Data:         data,
-		Version:      os.Getenv("APP_VERSION"),
-		ResponseType: server.MobileStatusOKType,
-	}
-}
-
-// AsMobileJsonSetStatusCode for special case, in catch() it call       'status' => $this->setStatusCode(400),
-func (h BaseHTTPHandler) AsMobileJsonSetStatusCode(ctx *app.Context, status int, message string, data interface{}) *server.Response {
-	return &server.Response{
-		Status:       status,
-		Message:      message,
-		Data:         data,
-		Version:      os.Getenv("APP_VERSION"),
-		ResponseType: server.MobileSetStatusCodeType,
-	}
-}
-
-// ThrowExceptionJson for some exception not handle in Yii2 framework
-func (h BaseHTTPHandler) ThrowExceptionJson(ctx *app.Context, status, code int, name, message string) *server.Response {
-	return &server.Response{
-		Status:       status,
-		Message:      "",
-		Data:         server.Yii2HTTPExceptionResponse{Name: name, Message: message, Code: code, Status: status},
-		Version:      "",
-		Log:          nil,
-		ResponseType: server.Yii2ExceptionResponseType,
 	}
 }
 
@@ -180,15 +145,6 @@ func (f BaseHTTPHandler) Execute(handler HandlerFn) http.HandlerFunc {
 				WriteJSON(rw, httpStatus, resp.GetYii2Exception())
 				return
 			} else if resp.ResponseType == server.MobileSetStatusCodeType {
-				// Ex:  $this->setStatusCode(500), 403, 400
-				//
-				//	} catch (\Exception $e) {
-				//     return $this->asJson([
-				//         'message' => Yii::t('app', 'Please try again'),
-				//    	   'status' => $this->setStatusCode(500),
-				//      'data' => []
-				//  ]);
-				//
 				WriteJSON(rw, httpStatus, server.MobileResponse{
 					Status:  httpStatus,
 					Message: resp.Message,

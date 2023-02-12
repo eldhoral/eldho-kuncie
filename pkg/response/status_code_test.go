@@ -3,7 +3,7 @@ package response
 import (
 	"testing"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/errs"
+	"github.com/eldhoral/eldho-kuncie/pkg/errs"
 
 	"github.com/stretchr/testify/assert"
 )

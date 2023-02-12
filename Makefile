@@ -1,5 +1,5 @@
 run: build
-	@./bin/paylater http
+	@./bin/eldho-kuncie http
 
 test:
 	@go fmt ./...
@@ -11,22 +11,13 @@ coverage:
 
 build:
 	@go mod tidy
-	@go build -o bin/paylater main.go
+	@go build -o bin/eldho-kuncie main.go
 
-engine:
-	@GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bin/docker/paylater main.go
+docker-build-mysql:
+	@sudo docker pull mysql/mysql-server:latest
 
-image: engine
-	@docker build -t paylater .
+docker-run-mysql:
+	@docker run --name mysql -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=kuncie -p 3306:3306 -d mysql/mysql-server:latest
 
 migrate-sql:
-	@$(HOME)/go/bin/sql-migrate up -env="development"
-
-migrate-data:
-	@$(HOME)/go/bin/sql-migrate up -env="development"
-
-docker-staging-build:
-	@docker-compose -f docker-compose.staging.yml up --build
-
-docker-staging-run:
-	@docker-compose -f docker-compose.staging.yml up
+	@go run . migrate	

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/filedata"
+	"github.com/eldhoral/eldho-kuncie/pkg/data/filedata"
 )
 
 var (

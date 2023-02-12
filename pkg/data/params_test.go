@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/helper/timehelper"
+	"github.com/eldhoral/eldho-kuncie/pkg/helper/timehelper"
 
 	"github.com/stretchr/testify/assert"
 )

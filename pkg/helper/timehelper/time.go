@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/constant"
+	"github.com/eldhoral/eldho-kuncie/pkg/data/constant"
 )
 
 const _24HourFormat = "15:04:05"
@@ -22,7 +22,7 @@ type DateRange struct {
 	EndDate   time.Time
 }
 
-//AddDurationFromTimeString Append current duration (cd)(hh:mm:ss) with total duration (td)(hh:mm:ss)
+// AddDurationFromTimeString Append current duration (cd)(hh:mm:ss) with total duration (td)(hh:mm:ss)
 func AddDurationFromTimeString(cd string, td string) string {
 	splitCD := strings.Split(cd, ":")
 	splitTD := strings.Split(td, ":")
@@ -62,7 +62,7 @@ func AddDurationFromTimeString(cd string, td string) string {
 		set24HourFormatOnTimeUnit(durationSecond))
 }
 
-//set24HourFormatOnTimeUnit append "0" on time unit to matches the 24-hour format (e.g. 3:12:4 => 03:12:04)
+// set24HourFormatOnTimeUnit append "0" on time unit to matches the 24-hour format (e.g. 3:12:4 => 03:12:04)
 func set24HourFormatOnTimeUnit(parameter int) string {
 	if parameter < 10 {
 		return "0" + strconv.Itoa(parameter)
@@ -98,16 +98,19 @@ func BuildDateRangeOnCurrentMonth() (time.Time, time.Time) {
 	return startOfMonth, endOfMonth
 }
 
-/*SplitOvertimeDuration
+/*
+SplitOvertimeDuration
 Iterate over range of days and map into start_date and end_date
 Example :
 startDate = '2021-10-01 15:00:00'
 endDate  = '2021-10-03' 13:00:00'
 
 result : [
+
 	{"start": "2021-10-01 15:00:00", "end" : "2021-10-01 23:59:59"},
 	{"start": "2021-10-02 00:00:00", "end" : "2021-10-02 23:59:59"},
 	{"start": "2021-10-03 00:00:00", "end" : "2021-10-03 15:00:00"},
+
 ]
 ref: splitOvertimeDuration function on talenta-core
 */
@@ -132,8 +135,8 @@ func SplitOvertimeDuration(startTime time.Time, endTime time.Time) []map[string]
 	return accuDate
 }
 
-//	GetStartDayAndEndDayOfTheWeekByDate returns start date as previous Monday and end date as next Monday.
-//	Assume a week starts on Monday.
+// GetStartDayAndEndDayOfTheWeekByDate returns start date as previous Monday and end date as next Monday.
+// Assume a week starts on Monday.
 func GetStartDayAndEndDayOfTheWeekByDate(date time.Time) DateRange {
 	starMonday := 1
 	endMonday := 8
@@ -354,7 +357,8 @@ func ConvertToValidTime(timeStr string) string {
 	return strings.Join(times, ":")
 }
 
-/**
+/*
+*
 MySQL TIMEDIFF format is hh:mm:ss, so activity duration must be parsed
 to second units, so that can be added or subtracted
 */
@@ -407,7 +411,8 @@ func GetWeekByDate(strDate string) (*WeekByDate, error) {
 	return &ret, err
 }
 
-/**
+/*
+*
 MySQL treat invalid time to default time,
 either by replacing the minute or the hour
 */

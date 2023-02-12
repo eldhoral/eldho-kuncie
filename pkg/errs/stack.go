@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/constant"
+	"github.com/eldhoral/eldho-kuncie/pkg/data/constant"
 )
 
 var (
@@ -16,7 +16,7 @@ var (
 	centerDot  = []byte("·")
 	dot        = []byte(".")
 	slash      = []byte("/")
-	pathPrefix = "/go/src/bitbucket.org/bitbucketnobubank/paylater-cms-api"
+	pathPrefix = "/go/src/github.com/eldhoral/eldho-kuncie"
 )
 
 func GetCurrentFileAndLine(index int) string {
@@ -54,7 +54,6 @@ func Stack(skip int) string {
 }
 
 // stack returns a nicely formatted stack frame, skipping skip frames.
-//
 func StackAndFile(skip int) (string, string) {
 	buf := new(bytes.Buffer) // the returned data
 	// As we loop, we open files and read them. These variables record the currently

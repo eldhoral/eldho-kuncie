@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data"
+	"github.com/eldhoral/eldho-kuncie/pkg/data"
 
 	"github.com/mitchellh/mapstructure"
 )

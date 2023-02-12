@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/errs"
+	"github.com/eldhoral/eldho-kuncie/pkg/errs"
 
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
@@ -18,7 +18,7 @@ var rootCmd = &cobra.Command{
 	Run:   func(cmd *cobra.Command, args []string) { cmd.Help() },
 }
 
-//register command
+// register command
 func init() {
 	//load environment variable
 	if err := godotenv.Load("./params/.env"); err != nil && err.Error() != errs.ErrNoSuchFile {

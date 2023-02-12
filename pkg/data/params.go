@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/constant"
+	"github.com/eldhoral/eldho-kuncie/pkg/data/constant"
 )
 
 func NewParamsWrapper() Params {
@@ -45,7 +45,7 @@ func (p *Params) GetInt64(key string) int64 {
 		return val
 	}
 
-	return p.body[key].(int64)
+	return 0
 }
 
 func (p Params) GetTime(key string) (time.Time, error) {

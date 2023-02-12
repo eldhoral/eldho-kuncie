@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/cmd"
+	"github.com/eldhoral/eldho-kuncie/cmd"
 
 	"github.com/sirupsen/logrus"
 )

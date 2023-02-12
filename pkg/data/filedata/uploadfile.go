@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/helper/slicehelper"
+	"github.com/eldhoral/eldho-kuncie/pkg/helper/slicehelper"
 
 	"github.com/google/uuid"
 )

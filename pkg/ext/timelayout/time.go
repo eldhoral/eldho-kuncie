@@ -17,7 +17,7 @@ import (
 	"time"
 	"unsafe"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/constant"
+	"github.com/eldhoral/eldho-kuncie/pkg/data/constant"
 
 	"github.com/sirupsen/logrus"
 

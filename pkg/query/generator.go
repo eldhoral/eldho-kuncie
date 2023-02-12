@@ -3,7 +3,7 @@ package generator
 import (
 	"strings"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data"
+	"github.com/eldhoral/eldho-kuncie/pkg/data"
 )
 
 func DynamicUpdateStatement(column []string, params data.Params) string {

@@ -1,5 +1,5 @@
 FROM golang:1.17-alpine AS gobuilder
-WORKDIR /go/src/bitbucket.org/bitbucketnobubank/paylater-cms-api
+WORKDIR /go/src/github.com/eldhoral/eldho-kuncie
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
@@ -11,6 +11,6 @@ RUN apk update && apk add ca-certificates bash jq curl tzdata && rm -rf /var/cac
 ENV TZ=Asia/Jakarta
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY --from=gobuilder /paylater-cms-api /bin
-COPY --from=gobuilder /go/src/bitbucket.org/bitbucketnobubank/paylater-cms-api/ /go/src/bitbucket.org/bitbucketnobubank/paylater-cms-api/
+COPY --from=gobuilder /go/src/github.com/eldhoral/eldho-kuncie/ /go/src/github.com/eldhoral/eldho-kuncie/
 ENTRYPOINT ["/bin/paylater-cms-api", "http"]
 

@@ -1,18 +1,12 @@
-# Paylater CMS API
+# Eldho Kuncie
 
-Paylater CMS API Service
+Eldho Kuncie Service
 
 ## Prerequisites
 
 **Install Go v 1.17**
 
 Please check the [Official Golang Documentation](https://golang.org/doc/install) for installation.
-
-**Install SQL-Migrate**
-
-```bash
-go get -v github.com/rubenv/sql-migrate/...
-```
 
 **Install Mockery**
 
@@ -48,9 +42,9 @@ go mod vendor
 **Clone this repository**
 
 ```bash
-git clone bitbucket.org/bitbucketnobubank/paylater-cms-api.git
+git clone github.com/eldhoral/eldho-kuncie.git
 # Switch to the repository folder
-cd paylater-cms-api
+cd eldho-kuncie
 ```
 
 **Copy the `.env.example` to `.env`**
@@ -61,47 +55,30 @@ cp .env.example .env
 
 Make the required configuration changes in the `.env` file.
 
-**Copy the `dbconfig.yml.example` to `dbconfig.yml`**
+## Install mysql on Docker
+
+**Build**
 
 ```bash
-cp dbconfig.yml.example dbconfig.yml
+make docker-build-mysql
 ```
 
-Make the required configuration changes in the `dbconfig.yml` file.
+**Run**
+
+```bash
+make docker-run-mysql
+```
 
 **Run DB Migration**
 
 ```bash
 make migrate-sql
-make migrate-data
 ```
 
 **Run Application**
 
 ```bash
 make run
-```
-
-## Install on Docker
-
-**Create docker image**
-
-```bash
-make image
-```
-
-## Install on Docker Compose
-
-**Build**
-
-```bash
-make docker-staging-build
-```
-
-**Run**
-
-```bash
-make docker-staging-run
 ```
 
 ## Unit Testing
@@ -170,8 +147,5 @@ When contributing to this repository, please note we have a code standards, plea
 * It's recommended to run `make test` command before submit a pull request.
 
 * Please update the postman collection if you modify or create new endpoint.
-* CMS
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/16666203-9e865a79-c825-49c6-ba81-db61d023b1bc?action=collection%2Ffork&collection-url=entityId%3D16666203-9e865a79-c825-49c6-ba81-db61d023b1bc%26entityType%3Dcollection%26workspaceId%3D94b64e98-ca7a-420a-824f-45deac156947)
-* Mobile
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/16666203-94ba24a7-a997-4374-bf78-67a3ae7f129f?action=collection%2Ffork&collection-url=entityId%3D16666203-94ba24a7-a997-4374-bf78-67a3ae7f129f%26entityType%3Dcollection%26workspaceId%3D94b64e98-ca7a-420a-824f-45deac156947)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/16666203-dae0b46c-ef3e-459b-9cf8-e98844fd0e86?action=collection%2Ffork&collection-url=entityId%3D16666203-dae0b46c-ef3e-459b-9cf8-e98844fd0e86%26entityType%3Dcollection%26workspaceId%3D242523f7-daca-4ecd-9e27-d2d288efd49a)
 

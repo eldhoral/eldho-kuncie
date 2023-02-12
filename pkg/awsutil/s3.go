@@ -11,13 +11,13 @@ import (
 
 	"time"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/helper/slicehelper"
+	"github.com/eldhoral/eldho-kuncie/pkg/helper/slicehelper"
 
 	"github.com/h2non/filetype"
 
 	"github.com/google/uuid"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/filedata"
+	"github.com/eldhoral/eldho-kuncie/pkg/data/filedata"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/credentials"

@@ -1,4 +1,0 @@
-development:
-  dialect: mysql
-  datasource: username:password@tcp(127.0.0.1:3306)/database?parseTime=true
-  dir: app/migrations/sql

@@ -6,9 +6,9 @@ import (
 	"os"
 	"time"
 
-	timeLayout "bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/constant"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/errs"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/httpclient"
+	timeLayout "github.com/eldhoral/eldho-kuncie/pkg/data/constant"
+	"github.com/eldhoral/eldho-kuncie/pkg/errs"
+	"github.com/eldhoral/eldho-kuncie/pkg/httpclient"
 
 	"github.com/sirupsen/logrus"
 )
@@ -102,7 +102,7 @@ type FlockLogrusResponse struct {
 	UID string `json:"uid"`
 }
 
-//SendMsgFlock send msg to default Flock
+// SendMsgFlock send msg to default Flock
 func (h *Hook) SendMsgFlock(message string) int {
 
 	data := map[string]string{"text": message}

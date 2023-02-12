@@ -3,7 +3,7 @@ package data
 import (
 	"testing"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/constant"
+	"github.com/eldhoral/eldho-kuncie/pkg/data/constant"
 
 	"github.com/stretchr/testify/assert"
 )

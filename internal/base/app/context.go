@@ -22,10 +22,10 @@ import (
 	"strings"
 	"time"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/data/filedata"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/errs"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/helper/realiphelper"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/pagination"
+	"github.com/eldhoral/eldho-kuncie/pkg/data/filedata"
+	"github.com/eldhoral/eldho-kuncie/pkg/errs"
+	"github.com/eldhoral/eldho-kuncie/pkg/helper/realiphelper"
+	"github.com/eldhoral/eldho-kuncie/pkg/pagination"
 
 	"github.com/gorilla/mux"
 )

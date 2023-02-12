@@ -5,7 +5,7 @@ import (
 	"flag"
 	"os"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/migration"
+	"github.com/eldhoral/eldho-kuncie/internal/base/migration"
 	"github.com/joho/godotenv"
 	gologger "github.com/mo-taufiq/go-logger"
 	"github.com/rs/zerolog"
@@ -21,7 +21,7 @@ const (
 
 var migrateUpCmd = &cobra.Command{
 	Use:   "migrate",
-	Short: "Migrate Up DB Paylater",
+	Short: "Migrate Up DB",
 	Long:  `Please you know what are you doing by using this command`,
 	Run: func(cmd *cobra.Command, args []string) {
 		envName, _ := cmd.Flags().GetString("env")
@@ -33,7 +33,7 @@ var migrateUpCmd = &cobra.Command{
 
 var migrateDownCmd = &cobra.Command{
 	Use:   "migratedown",
-	Short: "Migrate Up DB Paylater",
+	Short: "Migrate Up DB",
 	Long:  `Please you know what are you doing by using this command`,
 	Run: func(cmd *cobra.Command, args []string) {
 		envName, _ := cmd.Flags().GetString("env")

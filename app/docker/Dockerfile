@@ -1,5 +1,5 @@
 FROM golang:1.17-alpine AS gobuilder
-WORKDIR /go/src/bitbucket.org/bitbucketnobubank/paylater-cms-api
+WORKDIR /go/src/github.com/eldhoral/eldho-kuncie
 
 
 COPY go.mod .

@@ -5,11 +5,10 @@ import (
 	"net/http"
 	"os"
 
-	abModule "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/handler"
-	ofModule "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/handler"
+	storModule "github.com/eldhoral/eldho-kuncie/internal/store/handler"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/handler"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/server"
+	"github.com/eldhoral/eldho-kuncie/internal/base/handler"
+	"github.com/eldhoral/eldho-kuncie/pkg/server"
 
 	"github.com/gorilla/mux"
 	muxtrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/gorilla/mux"
@@ -20,14 +19,13 @@ type HttpServe struct {
 	router *muxtrace.Router
 
 	base  *handler.BaseHTTPHandler
-	offer *ofModule.HTTPHandler
-	about *abModule.HTTPHandler
+	store *storModule.HTTPHandler
 
 	v1     *mux.Router
 	static *mux.Route
 }
 
-//Run runs the HTTP server application
+// Run runs the HTTP server application
 func (h *HttpServe) Run() error {
 	h.setupRouter()
 	h.base.Handlers = h
@@ -35,16 +33,14 @@ func (h *HttpServe) Run() error {
 	return http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("HTTP_SERVER_PORT")), h.router)
 }
 
-//New creates new API server application
+// New creates new API server application
 func New(appName string,
 	base *handler.BaseHTTPHandler,
-	offer *ofModule.HTTPHandler,
-	about *abModule.HTTPHandler,
+	store *storModule.HTTPHandler,
 ) server.App {
 	return &HttpServe{
 		base:   base,
-		offer:  offer,
-		about:  about,
+		store:  store,
 		router: muxtrace.NewRouter(muxtrace.WithServiceName(appName)),
 	}
 }

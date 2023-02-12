@@ -3,21 +3,17 @@ package cmd
 import (
 	"fmt"
 
-	ofModule "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/handler"
-	ofRepo "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/repository"
-	ofService "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/offer/service"
-
-	abModule "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/handler"
-	abRepo "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/repository"
-	abService "bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/about/service"
+	storModule "github.com/eldhoral/eldho-kuncie/internal/store/handler"
+	storRepo "github.com/eldhoral/eldho-kuncie/internal/store/repository"
+	storService "github.com/eldhoral/eldho-kuncie/internal/store/service"
 
 	"github.com/sirupsen/logrus"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/internal/base/handler"
+	"github.com/eldhoral/eldho-kuncie/internal/base/handler"
 
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/db"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/httpclient"
-	"bitbucket.org/bitbucketnobubank/paylater-cms-api/pkg/metric"
+	"github.com/eldhoral/eldho-kuncie/pkg/db"
+	"github.com/eldhoral/eldho-kuncie/pkg/httpclient"
+	"github.com/eldhoral/eldho-kuncie/pkg/metric"
 
 	"os"
 	"strconv"
@@ -27,9 +23,9 @@ var (
 	params map[string]string
 
 	baseHandler  *handler.BaseHTTPHandler
-	offerHandler *ofModule.HTTPHandler
-	aboutHandler *abModule.HTTPHandler
-	httpClient   httpclient.Client
+	storeHandler *storModule.HTTPHandler
+
+	httpClient httpclient.Client
 
 	mysqlClientRepo  *db.MySQLClientRepository
 	statsdMonitoring metric.StatsdMonitoring
@@ -70,17 +66,13 @@ func initHTTP() {
 
 	params["mysql_tz"] = mysqlClientRepo.TZ
 
-	offerRepo := ofRepo.NewRepository(mysqlClientRepo.DB)
-	aboutRepo := abRepo.NewRepository(mysqlClientRepo.DB)
+	storeRepo := storRepo.NewRepository(mysqlClientRepo.DB)
 
-	offerService := ofService.NewService(offerRepo)
-	aboutService := abService.NewService(aboutRepo)
+	storeService := storService.NewService(storeRepo)
 
-	baseHandler = handler.NewBaseHTTPHandler(mysqlClientRepo.DB, httpClient, params,
-		offerService, aboutService, statsdMonitoring)
+	baseHandler = handler.NewBaseHTTPHandler(mysqlClientRepo.DB, httpClient, params, storeService, statsdMonitoring)
 
-	offerHandler = ofModule.NewHTTPHandler(baseHandler, offerService)
-	aboutHandler = abModule.NewHTTPHandler(baseHandler, aboutService)
+	storeHandler = storModule.NewHTTPHandler(baseHandler, storeService)
 
 	fmt.Println("INFO: Init and load module completed. Server started.\n---")
 }
