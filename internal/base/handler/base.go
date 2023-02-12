@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/eldhoral/eldho-kuncie/pkg/metric"
-
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 
 	"github.com/eldhoral/eldho-kuncie/internal/base/app"
@@ -28,8 +26,7 @@ type BaseHTTPHandler struct {
 	HTTPClient httpclient.Client
 	Params     map[string]string
 
-	StoreService     storeSer.Service
-	StatsdMonitoring metric.StatsdMonitoring
+	StoreService storeSer.Service
 }
 
 func NewBaseHTTPHandler(
@@ -39,13 +36,10 @@ func NewBaseHTTPHandler(
 
 	storeService storeSer.Service,
 
-	statsdMonitoring metric.StatsdMonitoring,
-
 ) *BaseHTTPHandler {
 
 	return &BaseHTTPHandler{DB: db, HTTPClient: httpClient, Params: params,
-		StoreService:     storeService,
-		StatsdMonitoring: statsdMonitoring,
+		StoreService: storeService,
 	}
 }
 

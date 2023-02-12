@@ -42,8 +42,8 @@ func (s service) CreateCheckout(params data.Params) (httpStatus int, err error) 
 	// Check if product quantity in db is enough for the checkput's product quantity
 	productIds := []int64{params.GetInt64("product_id")}
 	productQuantity, err := s.storeRepo.CheckQuantityByProductIds(productIds)
-	if err == sql.ErrNoRows {
-		return http.StatusNotFound, errors.New("No product was found")
+	if len((*productQuantity)) == 0 {
+		return http.StatusNotFound, purchasement, errors.New("No checkout was found")
 	}
 	if err != nil {
 		fmt.Println(err)
@@ -117,7 +117,7 @@ func (s service) AddProductToCheckout(params data.Params) (httpStatus int, err e
 func (s service) PurchaseProduct(params data.Params) (httpStatus int, purchasement store.ProductTotalPurchase, err error) {
 	// Check if the checkout is existing
 	productCheckout, err := s.storeRepo.GetCheckoutByPurchaseid(params.GetString("purchase_id"))
-	if err == sql.ErrNoRows {
+	if len((*productCheckout)) == 0 {
 		return http.StatusNotFound, purchasement, errors.New("No checkout was found")
 	}
 	if err != nil {
@@ -244,7 +244,7 @@ func (s service) DiscountRules(productPurchasetotal []store.ProductPurchase, cri
 func (s service) CheckoutDetail(params data.Params) (httpStatus int, purchasement store.ProductTotalPurchase, err error) {
 	// Check if the checkout is existing
 	productCheckout, err := s.storeRepo.GetCheckoutByPurchaseid(params.GetString("purchase_id"))
-	if err == sql.ErrNoRows {
+	if len((*productCheckout)) == 0 {
 		return http.StatusNotFound, purchasement, errors.New("No checkout was found")
 	}
 	if err != nil {

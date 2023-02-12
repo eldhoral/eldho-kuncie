@@ -13,7 +13,6 @@ import (
 
 	"github.com/eldhoral/eldho-kuncie/pkg/db"
 	"github.com/eldhoral/eldho-kuncie/pkg/httpclient"
-	"github.com/eldhoral/eldho-kuncie/pkg/metric"
 
 	"os"
 	"strconv"
@@ -27,8 +26,7 @@ var (
 
 	httpClient httpclient.Client
 
-	mysqlClientRepo  *db.MySQLClientRepository
-	statsdMonitoring metric.StatsdMonitoring
+	mysqlClientRepo *db.MySQLClientRepository
 )
 
 func initMySQL() {
@@ -70,7 +68,7 @@ func initHTTP() {
 
 	storeService := storService.NewService(storeRepo)
 
-	baseHandler = handler.NewBaseHTTPHandler(mysqlClientRepo.DB, httpClient, params, storeService, statsdMonitoring)
+	baseHandler = handler.NewBaseHTTPHandler(mysqlClientRepo.DB, httpClient, params, storeService)
 
 	storeHandler = storModule.NewHTTPHandler(baseHandler, storeService)
 
